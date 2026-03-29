@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Login - EduShare</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-primary": "#ffffff",
+              "outline-variant": "#c3c6d7",
+              "tertiary-fixed-dim": "#ffb596",
+              "on-surface": "#191c1e",
+              "secondary-fixed": "#d5e3fc",
+              "inverse-on-surface": "#eff1f3",
+              "outline": "#737686",
+              "on-surface-variant": "#434655",
+              "on-tertiary": "#ffffff",
+              "primary-container": "#2563eb",
+              "on-primary-fixed": "#00174b",
+              "on-primary-fixed-variant": "#003ea8",
+              "primary-fixed-dim": "#b4c5ff",
+              "on-error-container": "#93000a",
+              "tertiary": "#943700",
+              "on-background": "#191c1e",
+              "on-secondary-fixed": "#0d1c2e",
+              "secondary-fixed-dim": "#b9c7df",
+              "surface-dim": "#d8dadc",
+              "background": "#f7f9fb",
+              "surface-tint": "#0053db",
+              "on-secondary-fixed-variant": "#3a485b",
+              "on-error": "#ffffff",
+              "secondary-container": "#d5e3fc",
+              "on-secondary-container": "#57657a",
+              "surface-bright": "#f7f9fb",
+              "secondary": "#515f74",
+              "on-tertiary-fixed": "#360f00",
+              "surface-container-low": "#f2f4f6",
+              "on-tertiary-fixed-variant": "#7d2d00",
+              "inverse-primary": "#b4c5ff",
+              "primary": "#004ac6",
+              "surface-container": "#eceef0",
+              "inverse-surface": "#2d3133",
+              "error-container": "#ffdad6",
+              "primary-fixed": "#dbe1ff",
+              "surface-container-lowest": "#ffffff",
+              "surface-container-high": "#e6e8ea",
+              "surface": "#f7f9fb",
+              "on-secondary": "#ffffff",
+              "tertiary-container": "#bc4800",
+              "surface-variant": "#e0e3e5",
+              "surface-container-highest": "#e0e3e5",
+              "tertiary-fixed": "#ffdbcd",
+              "on-primary-container": "#eeefff",
+              "on-tertiary-container": "#ffede6",
+              "error": "#ba1a1a"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bg-login-gradient {
+            background: linear-gradient(135deg, #004ac6 0%, #2563eb 100%);
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background font-body text-on-surface min-h-screen flex items-center justify-center p-6">
+<div class="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0_20px_40px_rgba(25,28,30,0.06)] min-h-[700px]">
+<!-- Left Side: Brand & Visuals -->
+<div class="hidden md:flex flex-col justify-between p-12 bg-login-gradient text-on-primary relative overflow-hidden">
+<!-- Decorative circle -->
+<div class="absolute -top-24 -left-24 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
+<div class="absolute -bottom-24 -right-24 w-64 h-64 bg-primary-container/30 rounded-full blur-2xl"></div>
+<div class="relative z-10">
+<div class="flex items-center gap-2 mb-12">
+<span class="material-symbols-outlined text-4xl" data-icon="school" style="font-variation-settings: 'FILL' 1;">school</span>
+<span class="font-headline font-extrabold text-3xl tracking-tighter">EduShare</span>
+</div>
+<h1 class="font-headline font-bold text-5xl leading-tight mb-6">
+                    Curated for <br/> Excellence.
+                </h1>
+<p class="text-on-primary-container text-lg max-w-md opacity-90 leading-relaxed">
+                    Access the world's most organized academic repository. Join thousands of students sharing knowledge daily.
+                </p>
+</div>
+<div class="relative z-10 flex items-center gap-4">
+<div class="flex -space-x-4">
+<img class="w-12 h-12 rounded-full border-4 border-primary" data-alt="Student profile portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAB3KwDpg-71zUwIXjlfoMSZ61u6ARjSF8uo9x-VNcvO_2vyNbufKGpB0FVk8Bm9qkCUKY6AbNUoO3LSPKc8X969sLYAvdABi1ndR7gpJhgiGyogOBRbAm_1i4MQZxqCif_3DT2wqbfBM9sJFMzB7nRnDvF9qBkS2qCmhzgZow2z653JKGYTvdGl_V-JKkSJNADin1xWrRER8r6NmZvgrELltStMY9BI2VtF7TET73aec5d8BTsvnvqb_buVqFxuMMix4TOTpOElyQ"/>
+<img class="w-12 h-12 rounded-full border-4 border-primary" data-alt="Student profile portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkCjwBD0bjEEUOKOHyUuN1tWmefiH4prI3EBnPuZInUCTnISoJrKm4d7lV3fd2OPcKLg2asCC_hzqXXQBv4wCyD4X9NSCsCdXuHyVpE2usIueWjhQHK0jRHO2tm_TJKA_iNyFwm8ApamFYNiuM9ZanmUUC-M2wM2W9kBzORObajM6o9EEwhLPvl0mthv17ifgy_ngCl0O2TDGPWSd4bvvfXGhXVplb0zrAjiCJ5INjAqNLzeqJ0XNAEhR5HR_0Fl4LwlcJXM3ENbk"/>
+<img class="w-12 h-12 rounded-full border-4 border-primary" data-alt="Student profile portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuANucPA236QfSKyrnZxQ0BpR3bKfGTeE_Ack3AP3LJuwI8azzp6euOdcNdJU-Ian2rp2dzctk1PjnRyDXAdQix5usaNfVYCzmaLqkXr6hYPhaCNH9JIWk4h4rG80w-PHasKqs9OoZRNj-t_c4t2YTtCmqtR2sO2C_TRFTDJCUmhY2UNS2E9qHygiYBeDJzap2JKHjximaRo_yeB3MTmVPxirkX0_XDUpvwJ6H_l53uLTsMvEBCL-m72MRlrc47LOgMwSNn4bf2cEso"/>
+</div>
+<span class="text-sm font-medium">Over 50k+ students active now</span>
+</div>
+</div>
+<!-- Right Side: Login Form -->
+<div class="flex flex-col justify-center p-8 md:p-16 lg:p-24 bg-surface-container-lowest">
+<div class="mb-10">
+<div class="md:hidden flex items-center gap-2 mb-8">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="school" style="font-variation-settings: 'FILL' 1;">school</span>
+<span class="font-headline font-extrabold text-2xl tracking-tighter text-primary">EduShare</span>
+</div>
+<h2 class="font-headline font-bold text-3xl text-on-surface mb-2">Welcome Back</h2>
+<p class="text-on-surface-variant">Please enter your details to sign in.</p>
+</div>
+<form class="space-y-6">
+<!-- Email Field -->
+<div class="space-y-2">
+<label class="text-sm font-semibold text-on-surface ml-1" for="email">Email Address</label>
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-outline">
+<span class="material-symbols-outlined text-xl" data-icon="mail">mail</span>
+</div>
+<input class="w-full pl-12 pr-4 py-4 bg-surface-container-low rounded-xl border-none focus:ring-1 focus:ring-primary focus:bg-surface-container-lowest transition-all text-on-surface placeholder:text-outline/50" id="email" placeholder="name@university.edu" type="email"/>
+</div>
+</div>
+<!-- Password Field -->
+<div class="space-y-2">
+<div class="flex items-center justify-between px-1">
+<label class="text-sm font-semibold text-on-surface" for="password">Password</label>
+<a class="text-xs font-medium text-primary hover:underline" href="#">Forgot Password?</a>
+</div>
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-outline">
+<span class="material-symbols-outlined text-xl" data-icon="lock">lock</span>
+</div>
+<input class="w-full pl-12 pr-12 py-4 bg-surface-container-low rounded-xl border-none focus:ring-1 focus:ring-primary focus:bg-surface-container-lowest transition-all text-on-surface placeholder:text-outline/50" id="password" placeholder="••••••••" type="password"/>
+<div class="absolute inset-y-0 right-0 pr-4 flex items-center cursor-pointer text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl" data-icon="visibility">visibility</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2 px-1">
+<input class="w-5 h-5 rounded-sm border-outline-variant text-primary focus:ring-primary bg-surface-container-low" id="remember" type="checkbox"/>
+<label class="text-sm text-on-surface-variant font-medium cursor-pointer" for="remember">Remember me for 30 days</label>
+</div>
+<!-- Submit Button -->
+<button class="w-full py-4 bg-login-gradient text-on-primary font-bold rounded-xl shadow-lg shadow-primary/20 hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2 group" type="submit">
+<span>Sign In to Your Account</span>
+<span class="material-symbols-outlined text-xl transition-transform group-hover:translate-x-1" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<!-- Social Login Separator -->
+<!-- Social Buttons -->
+</form>
+<div class="mt-12 text-center">
+<p class="text-on-surface-variant font-medium">
+                    New to EduShare? 
+                    <a class="text-primary font-bold hover:underline ml-1" href="#">Create an account</a>
+</p>
+</div>
+</div>
+</div>
+<!-- Footer Copyright (Derived from Shared Component Style) -->
+<div class="fixed bottom-8 w-full text-center hidden md:block">
+<p class="font-body text-xs text-outline font-medium tracking-wide">
+            © 2024 EduShare GTU. Curated for Excellence.
+        </p>
+</div>
+</body></html>

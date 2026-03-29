@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EduShare - Data Structures</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container-low": "#f2f4f6",
+              "secondary-container": "#d5e3fc",
+              "surface-container-highest": "#e0e3e5",
+              "on-tertiary-fixed-variant": "#7d2d00",
+              "on-primary-fixed": "#00174b",
+              "tertiary": "#943700",
+              "secondary": "#515f74",
+              "primary-container": "#2563eb",
+              "on-tertiary-container": "#ffede6",
+              "surface-container-high": "#e6e8ea",
+              "on-surface-variant": "#434655",
+              "on-primary-container": "#eeefff",
+              "inverse-surface": "#2d3133",
+              "tertiary-fixed": "#ffdbcd",
+              "surface-container": "#eceef0",
+              "error-container": "#ffdad6",
+              "error": "#ba1a1a",
+              "on-secondary-container": "#57657a",
+              "on-error": "#ffffff",
+              "on-error-container": "#93000a",
+              "surface-tint": "#0053db",
+              "on-surface": "#191c1e",
+              "outline": "#737686",
+              "on-secondary-fixed": "#0d1c2e",
+              "secondary-fixed-dim": "#b9c7df",
+              "on-tertiary": "#ffffff",
+              "on-secondary-fixed-variant": "#3a485b",
+              "on-secondary": "#ffffff",
+              "surface-bright": "#f7f9fb",
+              "primary": "#004ac6",
+              "primary-fixed": "#dbe1ff",
+              "inverse-primary": "#b4c5ff",
+              "tertiary-fixed-dim": "#ffb596",
+              "background": "#f7f9fb",
+              "primary-fixed-dim": "#b4c5ff",
+              "on-background": "#191c1e",
+              "surface": "#f7f9fb",
+              "on-primary-fixed-variant": "#003ea8",
+              "on-primary": "#ffffff",
+              "surface-variant": "#e0e3e5",
+              "outline-variant": "#c3c6d7",
+              "inverse-on-surface": "#eff1f3",
+              "secondary-fixed": "#d5e3fc",
+              "on-tertiary-fixed": "#360f00",
+              "surface-dim": "#d8dadc",
+              "surface-container-lowest": "#ffffff",
+              "tertiary-container": "#bc4800"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .glass-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(20px);
+      }
+      .primary-gradient {
+        background: linear-gradient(135deg, #004ac6 0%, #2563eb 100%);
+      }
+    </style>
+</head>
+<body class="bg-background font-body text-on-surface">
+<!-- TopNavBar -->
+<nav class="fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-8 h-20 max-w-[1440px] mx-auto bg-white/80 backdrop-blur-xl rounded-full mt-4 mx-8 shadow-xl shadow-blue-900/5">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-black tracking-tight text-blue-700">EduShare</span>
+<div class="hidden md:flex gap-6 items-center">
+<a class="text-blue-700 font-bold border-b-2 border-blue-600 px-1 py-1 text-sm font-label" href="#">Courses</a>
+<a class="text-slate-600 hover:text-blue-600 transition-all duration-300 text-sm font-label" href="#">Library</a>
+<a class="text-slate-600 hover:text-blue-600 transition-all duration-300 text-sm font-label" href="#">Research</a>
+<a class="text-slate-600 hover:text-blue-600 transition-all duration-300 text-sm font-label" href="#">Mentors</a>
+<a class="text-slate-600 hover:text-blue-600 transition-all duration-300 text-sm font-label" href="#">Community</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-slate-600 hover:bg-slate-50 rounded-full transition-all">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-slate-600 hover:bg-slate-50 rounded-full transition-all">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<button class="px-6 py-2.5 rounded-full primary-gradient text-white font-semibold text-sm transition-transform active:scale-95">Get Started</button>
+</div>
+</nav>
+<main class="pt-32 pb-24 px-8 max-w-[1440px] mx-auto">
+<!-- Hero / Header Section Asymmetric -->
+<header class="mb-16 grid grid-cols-12 gap-8 items-end">
+<div class="col-span-12 md:col-span-7">
+<nav class="flex items-center gap-2 text-sm text-outline mb-4">
+<span>Courses</span>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span>Computer Science</span>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span class="text-primary font-medium">Data Structures</span>
+</nav>
+<h1 class="font-headline text-5xl font-extrabold text-on-surface tracking-tight mb-4">Data Structures &amp; Algorithms</h1>
+<p class="text-lg text-secondary max-w-2xl leading-relaxed">Master the core building blocks of software engineering. Explore comprehensive resources curated for academic excellence and technical interviews.</p>
+</div>
+<div class="col-span-12 md:col-span-5 flex justify-end">
+<div class="bg-secondary-container rounded-xl p-6 flex items-center gap-4 w-full md:w-auto">
+<div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined">school</span>
+</div>
+<div>
+<p class="text-xs font-bold text-on-secondary-container uppercase tracking-wider">Course Coordinator</p>
+<p class="font-bold text-on-surface">Dr. Aris Thorne</p>
+</div>
+</div>
+</div>
+</header>
+<!-- Bento Grid for Categories -->
+<div class="grid grid-cols-12 gap-6">
+<!-- Syllabus - Large Featured Card -->
+<div class="col-span-12 md:col-span-8 bg-surface-container-lowest rounded-xl p-8 group hover:shadow-xl transition-all duration-500 border border-transparent hover:border-primary/10">
+<div class="flex justify-between items-start mb-12">
+<div class="w-16 h-16 rounded-2xl bg-primary-container/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-4xl" data-weight="fill" style="font-variation-settings: 'FILL' 1;">list_alt</span>
+</div>
+<span class="px-4 py-1.5 rounded-full bg-surface-container-high text-on-surface-variant text-xs font-bold">UPDATED 2024</span>
+</div>
+<h3 class="font-headline text-3xl font-bold mb-4">Syllabus</h3>
+<p class="text-secondary mb-8 max-w-md">Detailed module-wise breakdown of topics including Arrays, Linked Lists, Trees, Graphs, and Complexity Analysis.</p>
+<div class="flex flex-wrap gap-3 mb-8">
+<span class="px-3 py-1 bg-surface-container-low rounded-lg text-xs font-medium">6 Modules</span>
+<span class="px-3 py-1 bg-surface-container-low rounded-lg text-xs font-medium">Prerequisites: C++</span>
+<span class="px-3 py-1 bg-surface-container-low rounded-lg text-xs font-medium">Exam Weightage</span>
+</div>
+<button class="flex items-center gap-2 text-primary font-bold group-hover:gap-4 transition-all">
+                    View Course Plan <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+<!-- YouTube Playlists - Medium Vertical Card -->
+<div class="col-span-12 md:col-span-4 bg-surface-container-low rounded-xl p-8 relative overflow-hidden group">
+<div class="relative z-10">
+<div class="w-14 h-14 rounded-2xl bg-error/10 flex items-center justify-center text-error mb-8">
+<span class="material-symbols-outlined text-3xl">play_circle</span>
+</div>
+<h3 class="font-headline text-2xl font-bold mb-2">YouTube Playlists</h3>
+<p class="text-secondary text-sm mb-6 leading-relaxed">Handpicked video lectures from top global educators and industry experts.</p>
+<ul class="space-y-4 mb-8">
+<li class="flex items-center gap-3 text-sm font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span> MIT OpenCourseWare
+                        </li>
+<li class="flex items-center gap-3 text-sm font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span> Abdul Bari's DS Series
+                        </li>
+<li class="flex items-center gap-3 text-sm font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span> Striver's A2Z Sheet
+                        </li>
+</ul>
+<button class="w-full py-3 bg-surface-container-lowest rounded-full font-bold text-sm text-error shadow-sm group-hover:shadow-md transition-all">Watch Now</button>
+</div>
+<div class="absolute -right-8 -bottom-8 opacity-5 group-hover:scale-110 transition-transform duration-700">
+<span class="material-symbols-outlined text-[12rem]">video_library</span>
+</div>
+</div>
+<!-- Previous Year Papers - Small Square -->
+<div class="col-span-12 md:col-span-4 bg-surface-container-highest rounded-xl p-8 hover:bg-white hover:shadow-xl transition-all duration-300">
+<div class="w-12 h-12 rounded-xl bg-on-surface/5 flex items-center justify-center text-on-surface mb-6">
+<span class="material-symbols-outlined text-2xl">history_edu</span>
+</div>
+<h3 class="font-headline text-xl font-bold mb-2">Previous Year Papers</h3>
+<p class="text-sm text-secondary mb-6">Access question papers from 2018-2023 for comprehensive exam preparation.</p>
+<div class="flex items-center justify-between">
+<span class="text-xs font-bold text-outline">12 Files</span>
+<button class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">download</span>
+</button>
+</div>
+</div>
+<!-- Notes - Small Square -->
+<div class="col-span-12 md:col-span-4 bg-surface-container-lowest rounded-xl p-8 shadow-sm hover:shadow-xl transition-all duration-300 border border-outline-variant/10">
+<div class="w-12 h-12 rounded-xl bg-tertiary/10 flex items-center justify-center text-tertiary mb-6">
+<span class="material-symbols-outlined text-2xl">menu_book</span>
+</div>
+<h3 class="font-headline text-xl font-bold mb-2">Class Notes</h3>
+<p class="text-sm text-secondary mb-6">Curated handwritten and digital notes covering every algorithm with visual diagrams.</p>
+<div class="flex items-center justify-between">
+<span class="text-xs font-bold text-outline">PDF Format</span>
+<button class="w-10 h-10 rounded-full bg-tertiary text-white flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">visibility</span>
+</button>
+</div>
+</div>
+<!-- Paper Solutions - Long Horizontal -->
+<div class="col-span-12 md:col-span-4 bg-primary text-white rounded-xl p-8 flex flex-col justify-between group overflow-hidden relative">
+<div class="relative z-10">
+<h3 class="font-headline text-xl font-bold mb-2">Paper Solutions</h3>
+<p class="text-primary-fixed/80 text-sm mb-6 leading-relaxed">Step-by-step verified solutions to past exam problems for scoring higher.</p>
+<button class="px-6 py-2 bg-white text-primary rounded-full text-xs font-bold hover:bg-primary-fixed transition-colors">Get Solutions</button>
+</div>
+<div class="absolute -right-4 -bottom-4 text-white/10 rotate-12">
+<span class="material-symbols-outlined text-9xl">fact_check</span>
+</div>
+</div>
+<!-- Books - Medium Rectangular -->
+<div class="col-span-12 bg-surface-container-low rounded-xl p-10 flex flex-col md:flex-row items-center gap-12">
+<div class="flex-1">
+<div class="w-14 h-14 rounded-2xl bg-secondary-container flex items-center justify-center text-primary mb-6">
+<span class="material-symbols-outlined text-3xl">auto_stories</span>
+</div>
+<h3 class="font-headline text-3xl font-bold mb-4">Recommended Books</h3>
+<p class="text-secondary max-w-xl mb-8">From 'Introduction to Algorithms' by CLRS to specialized C++ texts, find the bibliography that defines the field.</p>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container-lowest p-4 rounded-lg flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">verified</span>
+<span class="text-sm font-semibold">CLRS Standard</span>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-lg flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">verified</span>
+<span class="text-sm font-semibold">Robert Sedgewick</span>
+</div>
+</div>
+</div>
+<div class="flex-shrink-0 flex gap-4">
+<div class="w-32 h-44 bg-surface-container-highest rounded-lg shadow-lg rotate-[-10deg] flex items-center justify-center border-l-4 border-primary">
+<span class="text-[10px] font-bold text-center p-2">CLRS ALGORITHMS</span>
+</div>
+<div class="w-32 h-44 bg-surface-container-highest rounded-lg shadow-lg rotate-[5deg] -ml-8 mt-8 flex items-center justify-center border-l-4 border-tertiary">
+<span class="text-[10px] font-bold text-center p-2">DS IN C++</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-16 px-12 grid grid-cols-1 md:grid-cols-4 gap-12 mt-24 bg-slate-50 rounded-t-[3rem]">
+<div class="col-span-1 md:col-span-1">
+<span class="text-xl font-bold text-slate-900 block mb-6">EduShare Academy</span>
+<p class="text-sm text-slate-500 leading-relaxed">Empowering the next generation of engineers through accessible, premium educational resources.</p>
+</div>
+<div class="col-span-1">
+<h4 class="font-headline font-bold text-slate-900 mb-6 uppercase text-xs tracking-widest">Resources</h4>
+<ul class="space-y-4">
+<li><a class="text-sm text-slate-500 hover:text-blue-600 underline decoration-blue-500/30 underline-offset-4 transition-opacity opacity-80 hover:opacity-100" href="#">Library</a></li>
+<li><a class="text-sm text-slate-500 hover:text-blue-600 underline decoration-blue-500/30 underline-offset-4 transition-opacity opacity-80 hover:opacity-100" href="#">Research Papers</a></li>
+<li><a class="text-sm text-slate-500 hover:text-blue-600 underline decoration-blue-500/30 underline-offset-4 transition-opacity opacity-80 hover:opacity-100" href="#">Mentors</a></li>
+</ul>
+</div>
+<div class="col-span-1">
+<h4 class="font-headline font-bold text-slate-900 mb-6 uppercase text-xs tracking-widest">Legal</h4>
+<ul class="space-y-4">
+<li><a class="text-sm text-slate-500 hover:text-blue-600 underline decoration-blue-500/30 underline-offset-4 transition-opacity opacity-80 hover:opacity-100" href="#">Privacy Policy</a></li>
+<li><a class="text-sm text-slate-500 hover:text-blue-600 underline decoration-blue-500/30 underline-offset-4 transition-opacity opacity-80 hover:opacity-100" href="#">Terms of Service</a></li>
+<li><a class="text-sm text-slate-500 hover:text-blue-600 underline decoration-blue-500/30 underline-offset-4 transition-opacity opacity-80 hover:opacity-100" href="#">Academic Integrity</a></li>
+</ul>
+</div>
+<div class="col-span-1">
+<h4 class="font-headline font-bold text-slate-900 mb-6 uppercase text-xs tracking-widest">Newsletter</h4>
+<div class="flex items-center bg-white p-1 rounded-full shadow-sm border border-slate-200">
+<input class="bg-transparent border-none focus:ring-0 px-4 text-sm flex-1" placeholder="Email address" type="email"/>
+<button class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+<div class="col-span-full pt-12 border-t border-slate-200 text-center">
+<p class="text-xs text-slate-500">© 2024 EduShare Academy. All rights reserved.</p>
+</div>
+</footer>
+</body></html>

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EduShare - Course Materials</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container-low": "#f2f4f6",
+              "secondary-container": "#d5e3fc",
+              "surface-container-highest": "#e0e3e5",
+              "on-tertiary-fixed-variant": "#7d2d00",
+              "on-primary-fixed": "#00174b",
+              "tertiary": "#943700",
+              "secondary": "#515f74",
+              "primary-container": "#2563eb",
+              "on-tertiary-container": "#ffede6",
+              "surface-container-high": "#e6e8ea",
+              "on-surface-variant": "#434655",
+              "on-primary-container": "#eeefff",
+              "inverse-surface": "#2d3133",
+              "tertiary-fixed": "#ffdbcd",
+              "surface-container": "#eceef0",
+              "error-container": "#ffdad6",
+              "error": "#ba1a1a",
+              "on-secondary-container": "#57657a",
+              "on-error": "#ffffff",
+              "on-error-container": "#93000a",
+              "surface-tint": "#0053db",
+              "on-surface": "#191c1e",
+              "outline": "#737686",
+              "on-secondary-fixed": "#0d1c2e",
+              "secondary-fixed-dim": "#b9c7df",
+              "on-tertiary": "#ffffff",
+              "on-secondary-fixed-variant": "#3a485b",
+              "on-secondary": "#ffffff",
+              "surface-bright": "#f7f9fb",
+              "primary": "#004ac6",
+              "primary-fixed": "#dbe1ff",
+              "inverse-primary": "#b4c5ff",
+              "tertiary-fixed-dim": "#ffb596",
+              "background": "#f7f9fb",
+              "primary-fixed-dim": "#b4c5ff",
+              "on-background": "#191c1e",
+              "surface": "#f7f9fb",
+              "on-primary-fixed-variant": "#003ea8",
+              "on-primary": "#ffffff",
+              "surface-variant": "#e0e3e5",
+              "outline-variant": "#c3c6d7",
+              "inverse-on-surface": "#eff1f3",
+              "secondary-fixed": "#d5e3fc",
+              "on-tertiary-fixed": "#360f00",
+              "surface-dim": "#d8dadc",
+              "surface-container-lowest": "#ffffff",
+              "tertiary-container": "#bc4800"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen">
+<!-- TopNavBar (Shared Component) -->
+<header class="fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-8 h-20 max-w-[1440px] mx-auto bg-white/80 backdrop-blur-xl rounded-full mt-4 mx-8 shadow-xl shadow-blue-900/5">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-black tracking-tight text-blue-700">EduShare</span>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-slate-600 hover:text-blue-600 transition-all duration-300" href="#">Courses</a>
+<a class="text-blue-700 font-bold border-b-2 border-blue-600" href="#">Library</a>
+<a class="text-slate-600 hover:text-blue-600 transition-all duration-300" href="#">Research</a>
+<a class="text-slate-600 hover:text-blue-600 transition-all duration-300" href="#">Mentors</a>
+<a class="text-slate-600 hover:text-blue-600 transition-all duration-300" href="#">Community</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-slate-50 rounded-full transition-all duration-300">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+</button>
+<button class="p-2 hover:bg-slate-50 rounded-full transition-all duration-300">
+<span class="material-symbols-outlined text-on-surface-variant">settings</span>
+</button>
+<div class="h-10 w-10 rounded-full overflow-hidden border-2 border-primary-container">
+<img alt="User profile avatar" class="w-full h-full object-cover" data-alt="Professional male user profile photo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAge2JubyN7Shf5Xx06xQZUAOkIyklJpaKnaVljT-ncRgFB3hjwmpdpinwzmcEij75ahNEM8bPbZzZlw6yWBWJJUBN558lc8gSIXCgJULGYfQ89CxRNbX6ANz35ZTrqT1L8KA3xVB8ZRFkoQplc6JUvN949R30wexfc-moXUoE82L-Qlr4O9pKWwKFCJPC73lSNGjZ74aq3pduWcddrICa1Gt69xJDq_CidCNreb7HngjlosH1gpnpcPmxYgxmyna4lZeZOE0O7CIo"/>
+</div>
+</div>
+</header>
+<!-- Page Content (Blurred/Dimmed Background) -->
+<main class="pt-32 px-12 max-w-7xl mx-auto blur-sm select-none pointer-events-none">
+<div class="grid grid-cols-12 gap-8">
+<!-- Sidebar -->
+<aside class="col-span-3 space-y-6">
+<div class="bg-surface-container-low p-8 rounded-xl">
+<h2 class="text-xl font-bold mb-4">CS-301: Data Structures</h2>
+<div class="space-y-4">
+<div class="flex items-center gap-3 text-primary">
+<span class="material-symbols-outlined">menu_book</span>
+<span class="font-medium">Curriculum</span>
+</div>
+<div class="flex items-center gap-3 text-on-surface-variant">
+<span class="material-symbols-outlined">group</span>
+<span class="font-medium">Study Group</span>
+</div>
+<div class="flex items-center gap-3 text-on-surface-variant">
+<span class="material-symbols-outlined">assignment</span>
+<span class="font-medium">Assignments</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<div class="col-span-9 space-y-8">
+<div class="relative h-64 rounded-xl overflow-hidden">
+<img alt="Subject header" class="w-full h-full object-cover" data-alt="Abstract blue technology and education background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBT4Q0ZhTEd46l1lsbKzeWa__joDUPDnlXFhfhB1IM5aDwAEJXU2Gz809Mnlvy-w9gp2uJ2eJPh3gnuoJAERJXM6wkayUP3kHEx1zQJ3_PjrHa9zW71mGP9F-jds4Cx6Nug_gpPV3pmiy3eVgpEWCijYjLgwM3FuklQQ5Tgv7A-H6u6gT_FdRJqwEoOFDS2CPI7cCyMhlt3OYuB5BeUebUfPG5Ml1xQ6noH8nMypNBiz8zNZ1-fE3P2dNz0GdcAYdZ_n-Ojp86sNdw"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent flex items-end p-12">
+<h1 class="text-white text-5xl font-extrabold tracking-tight">Advanced Algorithms</h1>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-6">
+<div class="bg-surface-container-lowest p-8 rounded-xl shadow-sm">
+<div class="h-4 w-24 bg-surface-container-high rounded mb-4"></div>
+<div class="h-8 w-full bg-surface-container-high rounded mb-2"></div>
+<div class="h-4 w-2/3 bg-surface-container-high rounded"></div>
+</div>
+<div class="bg-surface-container-lowest p-8 rounded-xl shadow-sm">
+<div class="h-4 w-24 bg-surface-container-high rounded mb-4"></div>
+<div class="h-8 w-full bg-surface-container-high rounded mb-2"></div>
+<div class="h-4 w-2/3 bg-surface-container-high rounded"></div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Modal Overlay -->
+<div class="fixed inset-0 z-[60] bg-on-surface/40 backdrop-blur-sm flex items-center justify-center p-6">
+<!-- Modal Container -->
+<div class="bg-surface-container-lowest w-full max-w-2xl rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[870px]">
+<!-- Modal Header -->
+<div class="px-8 py-6 flex justify-between items-center border-b border-outline-variant/10">
+<div class="flex items-center gap-4">
+<div class="bg-primary-fixed w-12 h-12 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">folder_open</span>
+</div>
+<div>
+<h2 class="text-2xl font-bold tracking-tight text-on-surface">Course Materials</h2>
+<p class="text-sm text-on-surface-variant">CS-301: Advanced Data Structures &amp; Algorithms</p>
+</div>
+</div>
+<button class="w-10 h-10 rounded-full hover:bg-surface-container-low flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">close</span>
+</button>
+</div>
+<!-- Modal Content (Scrollable List) -->
+<div class="p-8 overflow-y-auto space-y-4">
+<!-- Material Item 1 -->
+<div class="group flex items-center justify-between p-5 bg-surface-container-low rounded-xl hover:bg-secondary-container transition-all duration-300">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-surface-container-lowest rounded-lg flex items-center justify-center text-error group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl">picture_as_pdf</span>
+</div>
+<div>
+<p class="font-bold text-on-surface">Unit 1: Intro to Linked Lists</p>
+<span class="text-xs font-medium uppercase tracking-wider text-on-surface-variant">2.4 MB • PDF Document</span>
+</div>
+</div>
+<button class="bg-primary hover:bg-primary-container text-white px-5 py-2 rounded-full font-semibold text-sm transition-all duration-300 active:scale-95 flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">download</span>
+                        Download
+                    </button>
+</div>
+<!-- Material Item 2 -->
+<div class="group flex items-center justify-between p-5 bg-surface-container-low rounded-xl hover:bg-secondary-container transition-all duration-300">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-surface-container-lowest rounded-lg flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl">link</span>
+</div>
+<div>
+<p class="font-bold text-on-surface">Visualizing Tree Traversals</p>
+<span class="text-xs font-medium uppercase tracking-wider text-on-surface-variant">External Resource • Interactive Link</span>
+</div>
+</div>
+<button class="bg-surface-container-highest hover:bg-outline-variant text-on-surface px-5 py-2 rounded-full font-semibold text-sm transition-all duration-300 active:scale-95 flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">open_in_new</span>
+                        Open
+                    </button>
+</div>
+<!-- Material Item 3 -->
+<div class="group flex items-center justify-between p-5 bg-surface-container-low rounded-xl hover:bg-secondary-container transition-all duration-300">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-surface-container-lowest rounded-lg flex items-center justify-center text-error group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl">picture_as_pdf</span>
+</div>
+<div>
+<p class="font-bold text-on-surface">Big O Notation Cheat Sheet</p>
+<span class="text-xs font-medium uppercase tracking-wider text-on-surface-variant">1.1 MB • PDF Document</span>
+</div>
+</div>
+<button class="bg-primary hover:bg-primary-container text-white px-5 py-2 rounded-full font-semibold text-sm transition-all duration-300 active:scale-95 flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">download</span>
+                        Download
+                    </button>
+</div>
+<!-- Material Item 4 -->
+<div class="group flex items-center justify-between p-5 bg-surface-container-low rounded-xl hover:bg-secondary-container transition-all duration-300">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-surface-container-lowest rounded-lg flex items-center justify-center text-secondary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl">slideshow</span>
+</div>
+<div>
+<p class="font-bold text-on-surface">Recursion &amp; Dynamic Programming</p>
+<span class="text-xs font-medium uppercase tracking-wider text-on-surface-variant">8.5 MB • Slide Deck</span>
+</div>
+</div>
+<button class="bg-primary hover:bg-primary-container text-white px-5 py-2 rounded-full font-semibold text-sm transition-all duration-300 active:scale-95 flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">download</span>
+                        Download
+                    </button>
+</div>
+</div>
+<!-- Modal Footer -->
+<div class="px-8 py-6 bg-surface-container-low flex justify-between items-center">
+<p class="text-sm text-on-surface-variant italic">Showing 4 of 12 available materials</p>
+<div class="flex gap-4">
+<button class="text-on-surface-variant font-semibold px-6 py-2 hover:underline underline-offset-4 decoration-primary/30 transition-all">
+                        Cancel
+                    </button>
+<button class="bg-primary text-white px-8 py-2 rounded-full font-bold shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
+                        Download All (.zip)
+                    </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer (Shared Component) -->
+<footer class="w-full py-16 px-12 grid grid-cols-1 md:grid-cols-4 gap-12 mt-24 bg-slate-50 rounded-t-[3rem]">
+<div class="col-span-1">
+<span class="text-xl font-bold text-slate-900 mb-6 block">EduShare</span>
+<p class="text-slate-500 text-sm leading-relaxed">
+                Empowering the next generation of scholars through collaborative learning and accessible academic resources.
+            </p>
+</div>
+<div>
+<h4 class="font-bold text-slate-900 mb-6">Quick Links</h4>
+<ul class="space-y-3">
+<li><a class="text-slate-500 hover:text-blue-600 underline underline-offset-4 decoration-blue-500/30" href="#">Privacy Policy</a></li>
+<li><a class="text-slate-500 hover:text-blue-600 underline underline-offset-4 decoration-blue-500/30" href="#">Terms of Service</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold text-slate-900 mb-6">Support</h4>
+<ul class="space-y-3">
+<li><a class="text-slate-500 hover:text-blue-600 underline underline-offset-4 decoration-blue-500/30" href="#">Academic Integrity</a></li>
+<li><a class="text-slate-500 hover:text-blue-600 underline underline-offset-4 decoration-blue-500/30" href="#">Contact Support</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold text-slate-900 mb-6">Newsletter</h4>
+<div class="bg-white p-1 rounded-full flex shadow-sm">
+<input class="bg-transparent border-none focus:ring-0 px-4 text-sm w-full" placeholder="Email address" type="email"/>
+<button class="bg-blue-600 text-white p-2 rounded-full">
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+<div class="col-span-full pt-12 border-t border-slate-200 text-center">
+<p class="text-slate-500 text-xs">© 2024 EduShare Academy. All rights reserved.</p>
+</div>
+</footer>
+</body></html>
