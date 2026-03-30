@@ -54,6 +54,15 @@ export const materialsApi = {
     create: ({ token, formData }) => request({ path: '/api/materials', method: 'POST', body: formData, token }),
 };
 
+export const adminApi = {
+    getMaterials: ({ token, status = 'pending' }) =>
+        request({ path: '/api/admin/materials', query: { status }, token }),
+    approveMaterial: ({ token, materialId }) =>
+        request({ path: `/api/admin/materials/${materialId}/approve`, method: 'PATCH', token }),
+    rejectMaterial: ({ token, materialId }) =>
+        request({ path: `/api/admin/materials/${materialId}/reject`, method: 'PATCH', token }),
+};
+
 export const studyGuideApi = {
     // Generate personalized study plan (no auth required)
     generatePlan: (payload) =>

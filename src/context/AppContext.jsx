@@ -3,11 +3,15 @@ import { authApi } from "../lib/api";
 
 const AppContext = createContext();
 const TOKEN_STORAGE_KEY = "edushare_token";
+const ROLE_STORAGE_KEY = "edushare_user_role";
 
 export function AppProvider({ children }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [token, setToken] = useState(
     () => localStorage.getItem(TOKEN_STORAGE_KEY) || "",
+  );
+  const [userRole, setUserRole] = useState(
+    () => localStorage.getItem(ROLE_STORAGE_KEY) || "",
   );
   const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(
@@ -20,6 +24,8 @@ export function AppProvider({ children }) {
     const syncUser = async () => {
       if (!token) {
         setUser(null);
+        setUserRole("");
+        localStorage.removeItem(ROLE_STORAGE_KEY);
         setAuthLoading(false);
         return;
       }
@@ -27,13 +33,23 @@ export function AppProvider({ children }) {
       try {
         const response = await authApi.me(token);
         if (isMounted) {
-          setUser(response.user || null);
+          const nextUser = response.user || null;
+          const nextRole = nextUser?.role || "";
+          setUser(nextUser);
+          setUserRole(nextRole);
+          if (nextRole) {
+            localStorage.setItem(ROLE_STORAGE_KEY, nextRole);
+          } else {
+            localStorage.removeItem(ROLE_STORAGE_KEY);
+          }
         }
       } catch {
         if (isMounted) {
           setToken("");
           setUser(null);
+          setUserRole("");
           localStorage.removeItem(TOKEN_STORAGE_KEY);
+          localStorage.removeItem(ROLE_STORAGE_KEY);
         }
       } finally {
         if (isMounted) {
@@ -50,15 +66,24 @@ export function AppProvider({ children }) {
   }, [token]);
 
   const setAuthFromResponse = ({ token: nextToken, user: nextUser }) => {
+    const nextRole = nextUser?.role || "";
     setToken(nextToken);
     setUser(nextUser || null);
+    setUserRole(nextRole);
     localStorage.setItem(TOKEN_STORAGE_KEY, nextToken);
+    if (nextRole) {
+      localStorage.setItem(ROLE_STORAGE_KEY, nextRole);
+    } else {
+      localStorage.removeItem(ROLE_STORAGE_KEY);
+    }
   };
 
   const logout = () => {
     setToken("");
     setUser(null);
+    setUserRole("");
     localStorage.removeItem(TOKEN_STORAGE_KEY);
+    localStorage.removeItem(ROLE_STORAGE_KEY);
   };
 
   const value = useMemo(
@@ -67,12 +92,14 @@ export function AppProvider({ children }) {
       setSearchQuery,
       token,
       user,
+      userRole,
       authLoading,
       isAuthenticated: Boolean(token),
+      isAdmin: userRole === "admin",
       setAuthFromResponse,
       logout,
     }),
-    [searchQuery, token, user, authLoading],
+    [searchQuery, token, user, userRole, authLoading],
   );
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

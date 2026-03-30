@@ -4,8 +4,14 @@ import { useAppContext } from "../context/AppContext";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { searchQuery, setSearchQuery, isAuthenticated, user, logout } =
-    useAppContext();
+  const {
+    searchQuery,
+    setSearchQuery,
+    isAuthenticated,
+    user,
+    isAdmin,
+    logout,
+  } = useAppContext();
   const location = useLocation();
 
   const guestLinks = [
@@ -19,7 +25,14 @@ export default function Navbar() {
     { to: "/study-guide", label: "AI Guide", icon: "auto_awesome" },
     { to: "/upload", label: "Upload", icon: "add_circle" },
   ];
-  const navLinks = isAuthenticated ? userLinks : guestLinks;
+  const navLinks = isAuthenticated
+    ? [
+        ...userLinks,
+        ...(isAdmin
+          ? [{ to: "/admin", label: "Admin", icon: "shield_person" }]
+          : []),
+      ]
+    : guestLinks;
 
   const isActive = (path) => location.pathname === path;
 
