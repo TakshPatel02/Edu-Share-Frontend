@@ -18,16 +18,32 @@ const SUBJECT_SUGGESTIONS = [
   "Computer Networks",
   "Theory of Computation",
   "Software Engineering",
+  "Artificial Intelligence",
 ];
 
 const CHAPTER_HINTS =
   "Example: Unit 1 (Stack/Queue), Unit 2 (Linked List), Unit 3 (Trees), Unit 4 (Graphs)";
 
+const isValidYoutubePlaylistUrl = (url) => {
+  if (!url?.trim()) return false;
+
+  try {
+    const parsed = new URL(url.trim());
+    const isYoutubeHost =
+      parsed.hostname.includes("youtube.com") ||
+      parsed.hostname.includes("youtu.be");
+    return isYoutubeHost && parsed.searchParams.has("list");
+  } catch {
+    return false;
+  }
+};
+
 export default function StudyGuideBot() {
   const [subject, setSubject] = useState("");
   const [goal, setGoal] = useState(LEARNING_GOALS[0]);
   const [examType, setExamType] = useState("Mid Sem");
-  const [syllabus, setSyllabus] = useState("");
+  const [syllabusPdf, setSyllabusPdf] = useState(null);
+  const [youtubePlaylist, setYoutubePlaylist] = useState("");
   const [chapters, setChapters] = useState("");
   const [weeks, setWeeks] = useState(2);
   const [hasGenerated, setHasGenerated] = useState(false);
@@ -35,26 +51,49 @@ export default function StudyGuideBot() {
   const [error, setError] = useState("");
   const [plan, setPlan] = useState(null);
 
-  const canGenerate = subject.trim() && chapters.trim();
+  const canGenerate =
+    subject.trim() && chapters.trim() && syllabusPdf && youtubePlaylist.trim();
 
   const handleGeneratePlan = async () => {
     try {
       setIsLoading(true);
       setError("");
+      setHasGenerated(false);
+      setPlan(null);
 
       const chapterArray = chapters
         .split(",")
         .map((ch) => ch.trim())
         .filter(Boolean);
 
-      const response = await studyGuideApi.generatePlan({
-        subject,
-        learningGoal: goal,
-        examType,
-        syllabus: syllabus || "",
-        chapters: chapterArray,
-        prepWeeks: Number(weeks),
-      });
+      if (!syllabusPdf) {
+        throw new Error("Please upload your syllabus PDF.");
+      }
+
+      if (syllabusPdf.type !== "application/pdf") {
+        throw new Error("Only PDF syllabus files are allowed.");
+      }
+
+      if (syllabusPdf.size > 5 * 1024 * 1024) {
+        throw new Error("Syllabus PDF must be 5MB or smaller.");
+      }
+
+      if (!isValidYoutubePlaylistUrl(youtubePlaylist)) {
+        throw new Error(
+          "Please provide a valid YouTube playlist URL with a list parameter.",
+        );
+      }
+
+      const formData = new FormData();
+      formData.append("subject", subject.trim());
+      formData.append("learningGoal", goal);
+      formData.append("examType", examType);
+      formData.append("chapters", JSON.stringify(chapterArray));
+      formData.append("prepWeeks", String(Number(weeks)));
+      formData.append("youtubePlaylist", youtubePlaylist.trim());
+      formData.append("syllabusPdf", syllabusPdf);
+
+      const response = await studyGuideApi.generatePlan(formData);
 
       if (response.success) {
         setPlan(response.data);
@@ -181,20 +220,39 @@ export default function StudyGuideBot() {
 
               <div>
                 <label className="block text-sm font-semibold text-secondary mb-2">
-                  4) Share syllabus overview
+                  4) Upload syllabus PDF
                 </label>
-                <textarea
-                  value={syllabus}
-                  onChange={(e) => setSyllabus(e.target.value)}
-                  rows={4}
-                  placeholder="Paste syllabus text or unit-wise topics"
-                  className="w-full px-4 py-3 rounded-xl bg-surface-container-low border border-outline-variant/40 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 resize-none"
+                <input
+                  type="file"
+                  accept="application/pdf"
+                  onChange={(e) => setSyllabusPdf(e.target.files?.[0] || null)}
+                  className="w-full h-12 px-3 py-2 rounded-xl bg-surface-container-low border border-outline-variant/40 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 file:mr-3 file:rounded-lg file:border-0 file:bg-primary file:px-3 file:py-1.5 file:text-white"
+                />
+                <p className="text-xs text-on-surface-variant mt-1">
+                  PDF only, max size 5MB.
+                </p>
+                {syllabusPdf && (
+                  <p className="text-xs text-on-surface mt-1">
+                    Selected: {syllabusPdf.name}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-secondary mb-2">
+                  5) YouTube playlist for guided study
+                </label>
+                <input
+                  value={youtubePlaylist}
+                  onChange={(e) => setYoutubePlaylist(e.target.value)}
+                  placeholder="https://www.youtube.com/playlist?list=..."
+                  className="w-full h-12 px-4 rounded-xl bg-surface-container-low border border-outline-variant/40 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-semibold text-secondary mb-2">
-                  5) Chapters included in exam
+                  6) Chapters included in exam
                 </label>
                 <input
                   value={chapters}
@@ -206,7 +264,7 @@ export default function StudyGuideBot() {
 
               <div>
                 <label className="block text-sm font-semibold text-secondary mb-2">
-                  6) Available prep window
+                  7) Available prep window
                 </label>
                 <input
                   type="range"
@@ -279,7 +337,7 @@ export default function StudyGuideBot() {
                   Your generated plan will appear here
                 </p>
                 <p className="text-sm text-on-surface-variant mt-1">
-                  Fill subject and chapters, then click the generate button.
+                  Fill all required fields, upload your PDF, then generate.
                 </p>
               </div>
             ) : plan ? (
@@ -332,15 +390,39 @@ export default function StudyGuideBot() {
                   </ul>
                 </div>
 
-                {syllabus.trim() && (
+                {(plan.videoPlan || []).length > 0 && (
                   <div className="rounded-xl border border-outline-variant/40 p-4 bg-surface-container-low">
                     <h4 className="font-bold text-on-surface mb-2">
-                      Syllabus Notes
+                      Video Plan
                     </h4>
-                    <p className="text-sm text-on-surface-variant whitespace-pre-wrap line-clamp-6">
-                      {syllabus}
-                    </p>
+                    <ul className="space-y-2">
+                      {(plan.videoPlan || []).map((item, idx) => (
+                        <li
+                          key={idx}
+                          className="text-sm text-on-surface-variant"
+                        >
+                          • {item}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
+                )}
+
+                {plan?.resources?.youtubePlaylist && (
+                  <a
+                    href={plan.resources.youtubePlaylist}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="block rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800 hover:bg-blue-100 transition-colors"
+                  >
+                    Open recommended playlist
+                  </a>
+                )}
+
+                {plan?.resources?.syllabusFileName && (
+                  <p className="text-xs text-on-surface-variant">
+                    Parsed syllabus file: {plan.resources.syllabusFileName}
+                  </p>
                 )}
               </div>
             ) : (
