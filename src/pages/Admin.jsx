@@ -3,6 +3,8 @@ import { Navigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { adminApi } from "../lib/api";
 import { useAppContext } from "../context/AppContext";
+import Modal from "../components/Modal";
+import PdfViewer from "../components/PdfViewer";
 
 const FILTERS = [
   { key: "pending", label: "Verification Queue" },
@@ -29,6 +31,7 @@ export default function Admin() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [actionLoadingId, setActionLoadingId] = useState("");
+  const [previewPdf, setPreviewPdf] = useState(null);
 
   const totalCount =
     statusCounts.pending + statusCounts.approved + statusCounts.rejected;
@@ -90,6 +93,17 @@ export default function Admin() {
     } finally {
       setActionLoadingId("");
     }
+  };
+
+  const openPdfPreview = (material) => {
+    if (!material?.fileUrl) {
+      return;
+    }
+
+    setPreviewPdf({
+      title: material.title,
+      url: material.fileUrl,
+    });
   };
 
   if (authLoading) {
@@ -165,7 +179,7 @@ export default function Admin() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.12 }}
-            className="bg-gradient-to-br from-blue-700 to-blue-500 rounded-2xl p-5 text-white"
+            className="bg-linear-to-br from-blue-700 to-blue-500 rounded-2xl p-5 text-white"
           >
             <p className="text-sm font-medium text-blue-100">Total Moderated</p>
             <p className="text-3xl font-extrabold font-[Manrope] mt-3">
@@ -251,7 +265,17 @@ export default function Admin() {
                     </div>
 
                     <div className="flex items-center gap-2 shrink-0">
-                      {material.fileUrl ? (
+                      {material.fileUrl && material.type === "PDF" ? (
+                        <button
+                          type="button"
+                          onClick={() => openPdfPreview(material)}
+                          className="px-4 py-2 rounded-xl text-sm font-semibold border border-slate-300 text-slate-700 hover:bg-slate-100 transition-colors"
+                        >
+                          Preview
+                        </button>
+                      ) : null}
+
+                      {material.fileUrl && material.type !== "PDF" ? (
                         <a
                           href={material.fileUrl}
                           target="_blank"
@@ -290,6 +314,17 @@ export default function Admin() {
               : null}
           </div>
         </section>
+
+        <Modal
+          isOpen={!!previewPdf}
+          onClose={() => setPreviewPdf(null)}
+          title={previewPdf?.title || "PDF Preview"}
+          subtitle="Admin in-app document viewer"
+        >
+          {previewPdf?.url ? (
+            <PdfViewer url={previewPdf.url} title={previewPdf.title} />
+          ) : null}
+        </Modal>
       </div>
     </div>
   );

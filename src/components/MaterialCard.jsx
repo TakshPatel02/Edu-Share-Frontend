@@ -1,13 +1,21 @@
-export default function MaterialCard({ material }) {
+export default function MaterialCard({ material, onPreviewPdf }) {
   const isPDF = material.type === "PDF";
-  const actionLabel = isPDF ? "Download PDF" : "Open Link";
+  const actionLabel = isPDF ? "View PDF" : "Open Link";
   const openResource = () => {
     if (!material.fileUrl) {
       return;
     }
 
     if (isPDF) {
-      window.location.assign(material.fileUrl);
+      if (onPreviewPdf) {
+        onPreviewPdf({
+          url: material.fileUrl,
+          title: material.title,
+        });
+        return;
+      }
+
+      window.open(material.fileUrl, "_blank", "noopener,noreferrer");
     } else {
       window.open(material.fileUrl, "_blank", "noopener,noreferrer");
     }

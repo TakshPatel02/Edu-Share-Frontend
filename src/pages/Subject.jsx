@@ -4,11 +4,13 @@ import { motion } from "framer-motion";
 import { materialCategories } from "../data/dummyData";
 import Modal from "../components/Modal";
 import MaterialCard from "../components/MaterialCard";
+import PdfViewer from "../components/PdfViewer";
 import { materialsApi } from "../lib/api";
 
 export default function Subject() {
   const { branchName, semId, subjectName } = useParams();
   const [activeCategory, setActiveCategory] = useState(null);
+  const [previewPdf, setPreviewPdf] = useState(null);
   const [materials, setMaterials] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -17,6 +19,7 @@ export default function Subject() {
 
   const openModal = (categoryId) => setActiveCategory(categoryId);
   const closeModal = () => setActiveCategory(null);
+  const closePreview = () => setPreviewPdf(null);
 
   const activeCat = materialCategories.find((c) => c.id === activeCategory);
 
@@ -82,7 +85,7 @@ export default function Subject() {
   };
 
   return (
-    <main className="pt-28 md:pt-32 pb-24 px-6 md:px-8 max-w-[1440px] mx-auto">
+    <main className="pt-28 md:pt-32 pb-24 px-6 md:px-8 max-w-360 mx-auto">
       {/* Header */}
       <header className="mb-12 md:mb-16 grid grid-cols-12 gap-6 md:gap-8 items-end">
         <motion.div
@@ -181,7 +184,7 @@ export default function Subject() {
                       {category.description}
                     </p>
                   </div>
-                  <div className="flex-shrink-0 flex gap-4">
+                  <div className="shrink-0 flex gap-4">
                     <div className="w-28 md:w-32 h-40 md:h-44 bg-surface-container-highest rounded-xl shadow-lg rotate-[-10deg] flex items-center justify-center border-l-4 border-primary">
                       <span className="text-[10px] font-bold text-center p-2">
                         CLRS ALGORITHMS
@@ -264,7 +267,11 @@ export default function Subject() {
             </p>
           )}
           {activeMaterials.map((material) => (
-            <MaterialCard key={material.id} material={material} />
+            <MaterialCard
+              key={material.id}
+              material={material}
+              onPreviewPdf={setPreviewPdf}
+            />
           ))}
         </div>
         {!loading && !error && activeMaterials.length > 0 && (
@@ -274,6 +281,17 @@ export default function Subject() {
             </p>
           </div>
         )}
+      </Modal>
+
+      <Modal
+        isOpen={!!previewPdf}
+        onClose={closePreview}
+        title={previewPdf?.title || "PDF Preview"}
+        subtitle="In-app document viewer"
+      >
+        {previewPdf?.url ? (
+          <PdfViewer url={previewPdf.url} title={previewPdf.title} />
+        ) : null}
       </Modal>
     </main>
   );
