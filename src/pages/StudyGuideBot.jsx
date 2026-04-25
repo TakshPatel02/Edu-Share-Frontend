@@ -1,6 +1,11 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { studyGuideApi } from "../lib/api.js";
+import {
+  branches,
+  semesters,
+  getSubjectsForBranchSemester,
+} from "../data/dummyData";
 
 const LEARNING_GOALS = [
   "Understand concepts from zero",
@@ -10,16 +15,6 @@ const LEARNING_GOALS = [
 ];
 
 const EXAM_TYPES = ["Mid Sem", "End Sem"];
-
-const SUBJECT_SUGGESTIONS = [
-  "Data Structures",
-  "Operating System",
-  "Database Management System",
-  "Computer Networks",
-  "Theory of Computation",
-  "Software Engineering",
-  "Artificial Intelligence",
-];
 
 const CHAPTER_HINTS =
   "Example: Unit 1 (Stack/Queue), Unit 2 (Linked List), Unit 3 (Trees), Unit 4 (Graphs)";
@@ -39,10 +34,13 @@ const isValidYoutubePlaylistUrl = (url) => {
 };
 
 export default function StudyGuideBot() {
+  const [branch, setBranch] = useState("IT");
+  const [semester, setSemester] = useState("5");
   const [subject, setSubject] = useState("");
   const [goal, setGoal] = useState(LEARNING_GOALS[0]);
   const [examType, setExamType] = useState("Mid Sem");
   const [syllabusPdf, setSyllabusPdf] = useState(null);
+  const [notesPdf, setNotesPdf] = useState(null);
   const [youtubePlaylist, setYoutubePlaylist] = useState("");
   const [chapters, setChapters] = useState("");
   const [weeks, setWeeks] = useState(2);
@@ -50,6 +48,23 @@ export default function StudyGuideBot() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [plan, setPlan] = useState(null);
+
+  const subjectSuggestions = useMemo(
+    () =>
+      getSubjectsForBranchSemester(branch, Number(semester)).map(
+        (item) => item.name,
+      ),
+    [branch, semester],
+  );
+
+  useEffect(() => {
+    if (!subjectSuggestions.length) {
+      setSubject("");
+      return;
+    }
+
+    setSubject((prev) => (subjectSuggestions.includes(prev) ? prev : ""));
+  }, [subjectSuggestions]);
 
   const canGenerate =
     subject.trim() && chapters.trim() && syllabusPdf && youtubePlaylist.trim();
@@ -78,6 +93,14 @@ export default function StudyGuideBot() {
         throw new Error("Syllabus PDF must be 5MB or smaller.");
       }
 
+      if (notesPdf && notesPdf.type !== "application/pdf") {
+        throw new Error("Only PDF notes files are allowed.");
+      }
+
+      if (notesPdf && notesPdf.size > 5 * 1024 * 1024) {
+        throw new Error("Notes PDF must be 5MB or smaller.");
+      }
+
       if (!isValidYoutubePlaylistUrl(youtubePlaylist)) {
         throw new Error(
           "Please provide a valid YouTube playlist URL with a list parameter.",
@@ -86,12 +109,17 @@ export default function StudyGuideBot() {
 
       const formData = new FormData();
       formData.append("subject", subject.trim());
+      formData.append("branch", branch);
+      formData.append("semester", semester);
       formData.append("learningGoal", goal);
       formData.append("examType", examType);
       formData.append("chapters", JSON.stringify(chapterArray));
       formData.append("prepWeeks", String(Number(weeks)));
       formData.append("youtubePlaylist", youtubePlaylist.trim());
       formData.append("syllabusPdf", syllabusPdf);
+      if (notesPdf) {
+        formData.append("notesPdf", notesPdf);
+      }
 
       const response = await studyGuideApi.generatePlan(formData);
 
@@ -158,17 +186,51 @@ export default function StudyGuideBot() {
             <div className="space-y-5">
               <div>
                 <label className="block text-sm font-semibold text-secondary mb-2">
-                  1) What do you want to learn?
+                  1) Select your branch
+                </label>
+                <select
+                  value={branch}
+                  onChange={(e) => setBranch(e.target.value)}
+                  className="w-full h-12 px-4 rounded-xl bg-surface-container-low border border-outline-variant/40 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                >
+                  {branches.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-secondary mb-2">
+                  2) Select your semester
+                </label>
+                <select
+                  value={semester}
+                  onChange={(e) => setSemester(e.target.value)}
+                  className="w-full h-12 px-4 rounded-xl bg-surface-container-low border border-outline-variant/40 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                >
+                  {semesters.map((item) => (
+                    <option key={item.id} value={String(item.id)}>
+                      {item.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-secondary mb-2">
+                  3) What do you want to learn?
                 </label>
                 <input
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
-                  placeholder="Example: Data Structures"
+                  placeholder="Select or type your subject"
                   list="subject-suggestions"
                   className="w-full h-12 px-4 rounded-xl bg-surface-container-low border border-outline-variant/40 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
                 />
                 <datalist id="subject-suggestions">
-                  {SUBJECT_SUGGESTIONS.map((item) => (
+                  {subjectSuggestions.map((item) => (
                     <option key={item} value={item} />
                   ))}
                 </datalist>
@@ -176,7 +238,7 @@ export default function StudyGuideBot() {
 
               <div>
                 <label className="block text-sm font-semibold text-secondary mb-2">
-                  2) What is your learning objective?
+                  4) What is your learning objective?
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {LEARNING_GOALS.map((item) => (
@@ -198,7 +260,7 @@ export default function StudyGuideBot() {
 
               <div>
                 <label className="block text-sm font-semibold text-secondary mb-2">
-                  3) Which exam are you preparing for?
+                  5) Which exam are you preparing for?
                 </label>
                 <div className="grid grid-cols-2 gap-2">
                   {EXAM_TYPES.map((item) => (
@@ -220,7 +282,7 @@ export default function StudyGuideBot() {
 
               <div>
                 <label className="block text-sm font-semibold text-secondary mb-2">
-                  4) Upload syllabus PDF
+                  6) Upload syllabus PDF
                 </label>
                 <input
                   type="file"
@@ -240,7 +302,27 @@ export default function StudyGuideBot() {
 
               <div>
                 <label className="block text-sm font-semibold text-secondary mb-2">
-                  5) YouTube playlist for guided study
+                  7) Upload your notes PDF (optional)
+                </label>
+                <input
+                  type="file"
+                  accept="application/pdf"
+                  onChange={(e) => setNotesPdf(e.target.files?.[0] || null)}
+                  className="w-full h-12 px-3 py-2 rounded-xl bg-surface-container-low border border-outline-variant/40 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 file:mr-3 file:rounded-lg file:border-0 file:bg-primary file:px-3 file:py-1.5 file:text-white"
+                />
+                <p className="text-xs text-on-surface-variant mt-1">
+                  Optional, PDF only, max size 5MB.
+                </p>
+                {notesPdf && (
+                  <p className="text-xs text-on-surface mt-1">
+                    Notes selected: {notesPdf.name}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-secondary mb-2">
+                  8) YouTube playlist for guided study
                 </label>
                 <input
                   value={youtubePlaylist}
@@ -252,7 +334,7 @@ export default function StudyGuideBot() {
 
               <div>
                 <label className="block text-sm font-semibold text-secondary mb-2">
-                  6) Chapters included in exam
+                  9) Chapters included in exam
                 </label>
                 <input
                   value={chapters}
@@ -264,7 +346,7 @@ export default function StudyGuideBot() {
 
               <div>
                 <label className="block text-sm font-semibold text-secondary mb-2">
-                  7) Available prep window
+                  10) Available prep window
                 </label>
                 <input
                   type="range"
@@ -422,6 +504,12 @@ export default function StudyGuideBot() {
                 {plan?.resources?.syllabusFileName && (
                   <p className="text-xs text-on-surface-variant">
                     Parsed syllabus file: {plan.resources.syllabusFileName}
+                  </p>
+                )}
+
+                {plan?.resources?.notesFileName && (
+                  <p className="text-xs text-on-surface-variant">
+                    Parsed notes file: {plan.resources.notesFileName}
                   </p>
                 )}
               </div>

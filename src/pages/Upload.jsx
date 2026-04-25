@@ -5,7 +5,7 @@ import FormInput from "../components/FormInput";
 import {
   branches,
   semesters,
-  subjectsBySemester,
+  getSubjectsForBranchSemester,
   materialCategories,
 } from "../data/dummyData";
 import { materialsApi } from "../lib/api";
@@ -55,6 +55,7 @@ export default function Upload() {
     setForm((prev) => ({
       ...prev,
       [name]: value,
+      ...(name === "branch" || name === "semester" ? { subject: "" } : {}),
     }));
   };
 
@@ -127,12 +128,15 @@ export default function Upload() {
     }
   };
 
-  const availableSubjects = form.semester
-    ? (subjectsBySemester[parseInt(form.semester)] || []).map((s) => s.name)
-    : [];
+  const availableSubjects =
+    form.branch && form.semester
+      ? getSubjectsForBranchSemester(form.branch, parseInt(form.semester)).map(
+          (s) => ({ value: s.name, label: `${s.code} - ${s.name}` }),
+        )
+      : [];
 
   return (
-    <main className="pt-28 md:pt-32 pb-20 px-6 max-w-[1200px] mx-auto">
+    <main className="pt-28 md:pt-32 pb-20 px-6 max-w-300 mx-auto">
       {/* Header */}
       <motion.div
         className="mb-12 md:mb-16 md:ml-0 lg:ml-12"
@@ -234,7 +238,7 @@ export default function Upload() {
             <div className="pt-6">
               <button
                 type="submit"
-                className="w-full h-14 md:h-16 bg-gradient-to-br from-primary to-primary-container text-on-primary font-bold rounded-xl text-lg shadow-lg shadow-primary/20 active:scale-95 transition-transform"
+                className="w-full h-14 md:h-16 bg-linear-to-br from-primary to-primary-container text-on-primary font-bold rounded-xl text-lg shadow-lg shadow-primary/20 active:scale-95 transition-transform"
               >
                 {submitting ? "Uploading..." : "Confirm and Upload"}
               </button>

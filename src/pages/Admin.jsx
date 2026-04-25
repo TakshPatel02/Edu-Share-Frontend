@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { adminApi } from "../lib/api";
 import { useAppContext } from "../context/AppContext";
@@ -19,6 +19,7 @@ const STATUS_STYLES = {
 };
 
 export default function Admin() {
+  const navigate = useNavigate();
   const { token, isAuthenticated, isAdmin, authLoading, logout, user } =
     useAppContext();
   const [statusFilter, setStatusFilter] = useState("pending");
@@ -35,6 +36,14 @@ export default function Admin() {
 
   const totalCount =
     statusCounts.pending + statusCounts.approved + statusCounts.rejected;
+  const reviewedCount = statusCounts.approved + statusCounts.rejected;
+  const approvalRate =
+    reviewedCount > 0
+      ? Math.round((statusCounts.approved / reviewedCount) * 100)
+      : 0;
+  const backlogLoad =
+    totalCount > 0 ? Math.round((statusCounts.pending / totalCount) * 100) : 0;
+  const activeQueueCount = materials.length;
 
   const loadAdminData = useCallback(
     async (showLoader = true) => {
@@ -106,6 +115,15 @@ export default function Admin() {
     });
   };
 
+  const handleBackClick = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+      return;
+    }
+
+    navigate("/");
+  };
+
   if (authLoading) {
     return (
       <main className="min-h-screen grid place-items-center bg-slate-50">
@@ -123,67 +141,107 @@ export default function Admin() {
   }
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_85%_0%,#dbeafe_0,#f8fafc_40%,#f8fafc_100%)] text-slate-900 font-[Inter]">
+    <div className="min-h-screen text-slate-900 font-[Inter] bg-[radial-gradient(circle_at_top_left,#dbeafe_0%,#eef4ff_25%,#f8fafc_58%,#ffffff_100%)]">
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-10">
-        <header className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-8">
-          <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-slate-500 font-semibold">
-              Admin Console
-            </p>
-            <h1 className="font-[Manrope] text-3xl md:text-4xl font-extrabold text-slate-900 mt-2">
-              EduShare Admin Dashboard
-            </h1>
-            <p className="text-slate-600 mt-2">
-              Review and moderate uploaded materials before publishing.
-            </p>
-          </div>
+        <header className="mb-7 rounded-2xl border border-slate-200 bg-white/95 backdrop-blur-sm px-4 md:px-6 py-4 shadow-[0_16px_40px_rgba(15,23,42,0.05)]">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div className="flex items-start gap-3 md:gap-4">
+              <button
+                type="button"
+                onClick={handleBackClick}
+                className="mt-0.5 inline-flex items-center gap-2 rounded-xl border border-slate-300 px-3.5 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 transition-colors"
+              >
+                <span aria-hidden="true">←</span>
+                Back
+              </button>
 
-          <div className="flex items-center gap-3">
-            <div className="px-4 py-2 rounded-full bg-white border border-slate-200 text-sm font-medium text-slate-700">
-              {user?.name || "Admin"}
+              <div>
+                <p className="text-xs uppercase tracking-[0.2em] text-slate-500 font-semibold">
+                  Administration Workspace
+                </p>
+                <h1 className="font-[Manrope] text-3xl md:text-4xl font-extrabold text-slate-900 mt-1.5">
+                  EduShare Moderation Panel
+                </h1>
+                <p className="text-slate-600 mt-2 text-sm md:text-base">
+                  Operational view for quality control and material
+                  verification.
+                </p>
+              </div>
             </div>
-            <button
-              onClick={logout}
-              className="px-5 py-2.5 rounded-full bg-slate-900 text-white text-sm font-semibold hover:bg-slate-700 transition-colors"
-            >
-              Logout
-            </button>
+
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="px-4 py-2 rounded-xl bg-slate-50 border border-slate-200 text-sm font-medium text-slate-700">
+                {user?.name || "Admin"}
+              </div>
+              <button
+                onClick={logout}
+                className="px-5 py-2.5 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:bg-slate-700 transition-colors"
+              >
+                Logout
+              </button>
+            </div>
           </div>
         </header>
 
-        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+        <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-7">
           <motion.article
-            initial={{ opacity: 0, y: 16 }}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             className="bg-white rounded-2xl border border-slate-200 p-5"
           >
-            <p className="text-sm font-medium text-slate-500">Pending Review</p>
-            <p className="text-3xl font-extrabold font-[Manrope] mt-3">
+            <p className="text-sm font-medium text-slate-500">Pending Queue</p>
+            <p className="text-3xl font-extrabold font-[Manrope] mt-2">
               {statusCounts.pending}
             </p>
-          </motion.article>
-
-          <motion.article
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.06 }}
-            className="bg-white rounded-2xl border border-slate-200 p-5"
-          >
-            <p className="text-sm font-medium text-slate-500">Approved Items</p>
-            <p className="text-3xl font-extrabold font-[Manrope] mt-3">
-              {statusCounts.approved}
+            <p className="text-xs text-slate-500 mt-2">
+              Needs moderator action
             </p>
           </motion.article>
 
           <motion.article
-            initial={{ opacity: 0, y: 16 }}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.12 }}
-            className="bg-linear-to-br from-blue-700 to-blue-500 rounded-2xl p-5 text-white"
+            transition={{ delay: 0.05 }}
+            className="bg-white rounded-2xl border border-slate-200 p-5"
           >
-            <p className="text-sm font-medium text-blue-100">Total Moderated</p>
-            <p className="text-3xl font-extrabold font-[Manrope] mt-3">
-              {totalCount}
+            <p className="text-sm font-medium text-slate-500">Reviewed Items</p>
+            <p className="text-3xl font-extrabold font-[Manrope] mt-2">
+              {reviewedCount}
+            </p>
+            <p className="text-xs text-slate-500 mt-2">
+              Approved + rejected decisions
+            </p>
+          </motion.article>
+
+          <motion.article
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="bg-white rounded-2xl border border-slate-200 p-5"
+          >
+            <p className="text-sm font-medium text-slate-500">Approval Rate</p>
+            <p className="text-3xl font-extrabold font-[Manrope] mt-2">
+              {approvalRate}%
+            </p>
+            <p className="text-xs text-slate-500 mt-2">
+              Based on reviewed decisions
+            </p>
+          </motion.article>
+
+          <motion.article
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className="rounded-2xl p-5 text-white bg-[linear-gradient(135deg,#0f172a_0%,#1d4ed8_55%,#0ea5e9_100%)]"
+          >
+            <p className="text-sm font-medium text-blue-100">
+              Current Queue Load
+            </p>
+            <p className="text-3xl font-extrabold font-[Manrope] mt-2">
+              {backlogLoad}%
+            </p>
+            <p className="text-xs text-blue-100 mt-2">
+              Pending share of all submissions
             </p>
           </motion.article>
         </section>
@@ -195,15 +253,16 @@ export default function Admin() {
                 Moderation Queue
               </h2>
               <p className="text-slate-500 text-sm mt-1">
-                Approve or reject user-submitted materials.
+                {activeQueueCount} item{activeQueueCount === 1 ? "" : "s"} in
+                this view.
               </p>
             </div>
-            <div className="flex items-center gap-2 bg-slate-100 rounded-full p-1 w-fit">
+            <div className="flex items-center gap-2 bg-slate-100 rounded-full p-1 w-fit overflow-x-auto">
               {FILTERS.map((filter) => (
                 <button
                   key={filter.key}
                   onClick={() => setStatusFilter(filter.key)}
-                  className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${
+                  className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-semibold transition-colors ${
                     statusFilter === filter.key
                       ? "bg-white text-blue-700 shadow"
                       : "text-slate-600 hover:text-slate-900"

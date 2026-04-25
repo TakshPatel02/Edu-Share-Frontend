@@ -45,53 +45,284 @@ export const semesters = [
     { id: 8, label: 'Semester VIII', shortLabel: 'Sem 8', phase: 'specialization', description: 'Cyber Laws, Industrial Internship, and Final Project Thesis.', courses: 3 },
 ];
 
-export const subjectsBySemester = {
+const SUBJECT_ICONS = [
+    'menu_book',
+    'code',
+    'memory',
+    'calculate',
+    'science',
+    'terminal',
+    'school',
+    'lan',
+    'engineering',
+    'psychology',
+];
+
+const makeSubject = (code, name, index = 0) => {
+    const icon = SUBJECT_ICONS[index % SUBJECT_ICONS.length];
+    const palette = index % 4;
+
+    const iconBg =
+        palette === 0
+            ? 'bg-primary-fixed'
+            : palette === 1
+                ? 'bg-tertiary-fixed'
+                : palette === 2
+                    ? 'bg-secondary-fixed'
+                    : 'bg-error-container';
+
+    const iconColor =
+        palette === 0
+            ? 'text-primary'
+            : palette === 1
+                ? 'text-tertiary'
+                : palette === 2
+                    ? 'text-secondary'
+                    : 'text-error';
+
+    return {
+        id: code.toLowerCase(),
+        code,
+        name,
+        icon,
+        iconBg,
+        iconColor,
+    };
+};
+
+const COMMON_SUBJECTS = {
     1: [
-        { id: 'math1', name: 'Engineering Mathematics I', icon: 'calculate', iconBg: 'bg-primary-fixed', iconColor: 'text-primary' },
-        { id: 'physics', name: 'Applied Physics', icon: 'science', iconBg: 'bg-tertiary-fixed', iconColor: 'text-tertiary' },
-        { id: 'civil', name: 'Elements of Civil Engineering', icon: 'engineering', iconBg: 'bg-secondary-fixed', iconColor: 'text-secondary' },
-        { id: 'eme', name: 'Elements of Mechanical Engineering', icon: 'precision_manufacturing', iconBg: 'bg-error-container', iconColor: 'text-error' },
+        ['3110002', 'English'],
+        ['3110003', 'Programming for Problem Solving'],
+        ['3110014', 'Mathematics I'],
+        ['3110006', 'Basic Mechanical Engineering'],
+        ['3110007', 'Environmental Science'],
+        ['3110018', 'Physics'],
     ],
     2: [
-        { id: 'math2', name: 'Engineering Mathematics II', icon: 'functions', iconBg: 'bg-primary-fixed', iconColor: 'text-primary' },
-        { id: 'cprog', name: 'Programming in C', icon: 'code', iconBg: 'bg-tertiary-fixed', iconColor: 'text-tertiary' },
-        { id: 'comm', name: 'Communication Skills', icon: 'record_voice_over', iconBg: 'bg-secondary-fixed', iconColor: 'text-secondary' },
-        { id: 'eee', name: 'Environmental Engineering', icon: 'eco', iconBg: 'bg-error-container', iconColor: 'text-error' },
+        ['3110012', 'Workshop'],
+        ['3110005', 'Basic Electrical Engineering'],
+        ['3110013', 'Engineering Graphics and Design'],
+        ['3110015', 'Mathematics II'],
+        ['3110016', 'Basic Electronics'],
     ],
     3: [
-        { id: 'ds', name: 'Data Structures', icon: 'account_tree', iconBg: 'bg-primary-fixed', iconColor: 'text-primary' },
-        { id: 'dbms', name: 'Database Management Systems', icon: 'database', iconBg: 'bg-tertiary-fixed', iconColor: 'text-tertiary' },
-        { id: 'dld', name: 'Digital Logic Design', icon: 'memory', iconBg: 'bg-secondary-fixed', iconColor: 'text-secondary' },
-        { id: 'oop', name: 'Object Oriented Programming', icon: 'data_object', iconBg: 'bg-error-container', iconColor: 'text-error' },
+        ['3130004', 'Effective Technical Communication'],
+        ['3130006', 'Probability and Statistics'],
+        ['3130007', 'Indian Constitution'],
+        ['3130702', 'Data Structures'],
+        ['3130703', 'Database Management Systems'],
+        ['3130704', 'Digital Fundamentals'],
     ],
     4: [
-        { id: 'os', name: 'Operating Systems', icon: 'terminal', iconBg: 'bg-primary-fixed', iconColor: 'text-primary' },
-        { id: 'cn', name: 'Computer Networks', icon: 'lan', iconBg: 'bg-tertiary-fixed', iconColor: 'text-tertiary' },
-        { id: 'dm', name: 'Discrete Mathematics', icon: 'functions', iconBg: 'bg-secondary-fixed', iconColor: 'text-secondary' },
-        { id: 'aad', name: 'Analysis & Design of Algorithms', icon: 'analytics', iconBg: 'bg-error-container', iconColor: 'text-error' },
+        ['3140707', 'Computer Organization and Architecture'],
+        ['3140708', 'Discrete Mathematics'],
+        ['3140709', 'Principles of Economics and Management'],
+        ['3140702', 'Operating System'],
+        ['3140705', 'Object Oriented Programming'],
     ],
+};
+
+const CE_CSE_SEM_5 = [
+    ['3150005', 'Integrated Personality Development Course - 1'],
+    ['3150703', 'Analysis and Design of Algorithm'],
+    ['3150709', 'Professional Ethics'],
+    ['3150710', 'Computer Networks'],
+    ['3150711', 'Software Engineering'],
+    ['3150712', 'Computer Graphics'],
+    ['3150713', 'Python for Data Science'],
+    ['3150714', 'Cyber Security'],
+];
+
+const CE_CSE_SEM_6 = [
+    ['3160003', 'Integrated Personality Development Course - 2'],
+    ['3160704', 'Theory of Computation'],
+    ['3160712', 'Microprocessor and Interfacing'],
+    ['3160713', 'Web Programming'],
+    ['3160707', 'Advanced Java Programming'],
+    ['3160716', 'IoT and Applications'],
+    ['3160715', 'System Software'],
+];
+
+const CE_CSE_SEM_7 = [
+    ['3170007', 'Summer Internship'],
+    ['3170701', 'Compiler Design'],
+    ['3170716', 'Artificial Intelligence'],
+    ['3170719', 'Distributed System'],
+    ['3170720', 'Information Security'],
+    ['3170710', 'Mobile Computing and Wireless Communication'],
+    ['3170723', 'Natural Language Processing'],
+    ['3170725', 'Digital Forensics'],
+    ['3170726', 'Mobile Application Development'],
+];
+
+const IT_SUBJECTS = {
+    ...COMMON_SUBJECTS,
     5: [
-        { id: 'se', name: 'Software Engineering', icon: 'bug_report', iconBg: 'bg-primary-fixed', iconColor: 'text-primary' },
-        { id: 'webtech', name: 'Web Technology', icon: 'language', iconBg: 'bg-tertiary-fixed', iconColor: 'text-tertiary' },
-        { id: 'dotnet', name: '.NET Technology', icon: 'code_blocks', iconBg: 'bg-secondary-fixed', iconColor: 'text-secondary' },
-        { id: 'aj', name: 'Advanced Java', icon: 'coffee', iconBg: 'bg-error-container', iconColor: 'text-error' },
+        ['3150005', 'Integrated Personality Development Course - 1'],
+        ['3150703', 'Analysis and Design of Algorithm'],
+        ['3150714', 'Cyber Security'],
+        ['3150710', 'Computer Networks'],
+        ['3151608', 'Data Science'],
+        ['3150709', 'Professional Ethics'],
+        ['3151606', 'Web Development'],
     ],
     6: [
-        { id: 'ai', name: 'Artificial Intelligence', icon: 'psychology', iconBg: 'bg-primary-fixed', iconColor: 'text-primary' },
-        { id: 'ns', name: 'Network Security', icon: 'shield', iconBg: 'bg-tertiary-fixed', iconColor: 'text-tertiary' },
-        { id: 'mad', name: 'Mobile Application Dev', icon: 'smartphone', iconBg: 'bg-secondary-fixed', iconColor: 'text-secondary' },
-        { id: 'cc', name: 'Cloud Computing', icon: 'cloud', iconBg: 'bg-error-container', iconColor: 'text-error' },
+        ['3160003', 'Integrated Personality Development Course - 2'],
+        ['3161610', 'Data Warehousing and Mining'],
+        ['3161608', 'Artificial Intelligence'],
+        ['3161611', 'Advanced Web Programming'],
+        ['3161605', 'Software Engineering'],
+        ['3161513', 'Data Analysis and Visualizations'],
+        ['3161606', 'Cryptography and Network Security'],
+        ['3161612', 'Mobile Application Development'],
     ],
     7: [
-        { id: 'iot', name: 'Internet of Things', icon: 'sensors', iconBg: 'bg-primary-fixed', iconColor: 'text-primary' },
-        { id: 'bd', name: 'Big Data Analytics', icon: 'bar_chart', iconBg: 'bg-tertiary-fixed', iconColor: 'text-tertiary' },
-        { id: 'is', name: 'Information Security', icon: 'security', iconBg: 'bg-secondary-fixed', iconColor: 'text-secondary' },
-        { id: 'mp1', name: 'Major Project Phase I', icon: 'science', iconBg: 'bg-error-container', iconColor: 'text-error' },
+        ['3170007', 'Summer Internship'],
+        ['3171608', 'Wireless Communication'],
+        ['3171609', 'Software Project Management'],
+        ['3171610', 'Agile Development and UI/UX Design'],
+        ['3171612', 'Virtual and Augmented Reality'],
+        ['3171616', 'Internetwork Security and Web Analytics'],
+        ['3171618', 'Blockchain'],
     ],
-    8: [
-        { id: 'cl', name: 'Cyber Laws & Ethics', icon: 'gavel', iconBg: 'bg-primary-fixed', iconColor: 'text-primary' },
-        { id: 'intern', name: 'Industrial Internship', icon: 'work', iconBg: 'bg-tertiary-fixed', iconColor: 'text-tertiary' },
-        { id: 'mp2', name: 'Major Project Phase II', icon: 'school', iconBg: 'bg-secondary-fixed', iconColor: 'text-secondary' },
+    8: [['3181601', 'Internship / Project']],
+};
+
+const CE_SUBJECTS = {
+    ...COMMON_SUBJECTS,
+    5: CE_CSE_SEM_5,
+    6: CE_CSE_SEM_6,
+    7: CE_CSE_SEM_7,
+    8: [['3181601', 'Internship / Project']],
+};
+
+const CSE_SUBJECTS = {
+    ...COMMON_SUBJECTS,
+    5: CE_CSE_SEM_5,
+    6: CE_CSE_SEM_6,
+    7: CE_CSE_SEM_7,
+    8: [['3181601', 'Internship / Project']],
+};
+
+const toDisplaySubjects = (subjectRows = []) =>
+    subjectRows.map(([code, name], index) => makeSubject(code, name, index));
+
+export const branchSemesterSubjects = {
+    IT: Object.fromEntries(
+        Object.entries(IT_SUBJECTS).map(([semester, rows]) => [semester, toDisplaySubjects(rows)])
+    ),
+    CE: Object.fromEntries(
+        Object.entries(CE_SUBJECTS).map(([semester, rows]) => [semester, toDisplaySubjects(rows)])
+    ),
+    CSE: Object.fromEntries(
+        Object.entries(CSE_SUBJECTS).map(([semester, rows]) => [semester, toDisplaySubjects(rows)])
+    ),
+};
+
+export const getSubjectsForBranchSemester = (branchId, semId) => {
+    const normalizedBranch = ['IT', 'CE', 'CSE'].includes(branchId) ? branchId : 'IT';
+    const semesterKey = String(Number(semId));
+
+    return branchSemesterSubjects?.[normalizedBranch]?.[semesterKey] || [];
+};
+
+export const subjectsBySemester = Object.fromEntries(
+    Object.entries(COMMON_SUBJECTS).map(([semester, rows]) => [semester, toDisplaySubjects(rows)])
+);
+
+export const isInternshipSemester = (semId) => [7, 8].includes(Number(semId));
+
+export const internshipCategories = [
+    {
+        id: 'companyDirectory',
+        name: 'Company Directory',
+        icon: 'apartment',
+        description: 'Explore internship-friendly companies and roles mapped to this semester.',
+        iconBg: 'bg-primary-container/10',
+        iconColor: 'text-primary',
+    },
+    {
+        id: 'projectIdeas',
+        name: 'Project Ideas',
+        icon: 'tips_and_updates',
+        description: 'Curated practical ideas to help you build strong industry-ready projects.',
+        iconBg: 'bg-secondary-container',
+        iconColor: 'text-primary',
+    },
+    {
+        id: 'internshipChecklist',
+        name: 'Internship Checklist',
+        icon: 'checklist',
+        description: 'Preparation checklist for resume, interview, portfolio, and internship tracking.',
+        iconBg: 'bg-tertiary-fixed',
+        iconColor: 'text-tertiary',
+    },
+];
+
+export const getCategoriesForSemester = (semId) =>
+    Number(semId) === 8 ? internshipCategories : materialCategories;
+
+export const internshipCompanyDirectory = [
+    {
+        name: 'Tata Consultancy Services (TCS)',
+        focus: 'Software Development, QA, Data Engineering',
+        mode: 'Onsite/Hybrid',
+    },
+    {
+        name: 'Infosys',
+        focus: 'Full Stack, Testing, Cloud Support',
+        mode: 'Onsite/Remote (team based)',
+    },
+    {
+        name: 'Wipro',
+        focus: 'Cyber Security, Infra, Application Support',
+        mode: 'Hybrid',
+    },
+    {
+        name: 'Cognizant',
+        focus: 'Java, .NET, Data & Analytics',
+        mode: 'Onsite/Hybrid',
+    },
+    {
+        name: 'Capgemini',
+        focus: 'Cloud, DevOps, Backend Engineering',
+        mode: 'Hybrid',
+    },
+    {
+        name: 'LTIMindtree',
+        focus: 'Web Platforms, Enterprise Apps',
+        mode: 'Onsite',
+    },
+];
+
+export const internshipChecklist = [
+    'Finalize resume with latest project links and role-focused summary.',
+    'Prepare branch-specific top 20 interview questions and answers.',
+    'Build one deployable mini-project and one major project overview.',
+    'Create GitHub README documentation for all key projects.',
+    'Track company deadlines, assignment links, and HR contacts.',
+    'Practice mock interviews and aptitude tests weekly.',
+];
+
+export const projectIdeasByBranch = {
+    IT: [
+        'AI-driven study planner with notes summarization and revision reminders.',
+        'Secure file-sharing portal with role-based access and audit logs.',
+        'Campus event analytics dashboard using Python and Power BI.',
+        'Student placement tracker with company eligibility automation.',
+    ],
+    CE: [
+        'Compiler phase visualizer for lexical and syntax analysis.',
+        'IoT-enabled lab attendance and equipment monitoring system.',
+        'Network traffic analyzer for anomaly detection in LAN setup.',
+        'Mobile-first bug reporting platform for college infrastructure.',
+    ],
+    CSE: [
+        'Cloud cost optimizer for student projects deployed on free tiers.',
+        'NLP-based document assistant for academic papers and reports.',
+        'Distributed task scheduler with monitoring and retry strategy.',
+        'Cyber incident response simulator for security training labs.',
     ],
 };
 

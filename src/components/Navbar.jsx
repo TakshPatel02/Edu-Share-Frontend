@@ -4,14 +4,7 @@ import { useAppContext } from "../context/AppContext";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const {
-    searchQuery,
-    setSearchQuery,
-    isAuthenticated,
-    user,
-    isAdmin,
-    logout,
-  } = useAppContext();
+  const { isAuthenticated, user, isAdmin, logout } = useAppContext();
   const location = useLocation();
 
   const guestLinks = [
@@ -40,7 +33,7 @@ export default function Navbar() {
     <>
       {/* Desktop Navbar */}
       <header className="fixed top-0 left-0 right-0 z-50 px-4 md:px-8 pt-4">
-        <nav className="flex justify-between items-center px-6 md:px-8 h-16 md:h-20 max-w-[1440px] mx-auto bg-white/80 backdrop-blur-xl rounded-full shadow-xl shadow-blue-900/5">
+        <nav className="flex justify-between items-center px-6 md:px-8 h-16 md:h-20 max-w-360 mx-auto bg-white/80 backdrop-blur-xl rounded-full shadow-xl shadow-blue-900/5">
           <div className="flex items-center gap-6 md:gap-8">
             <Link
               to="/"
@@ -48,19 +41,6 @@ export default function Navbar() {
             >
               EduShare
             </Link>
-            {/* Search Bar - Desktop */}
-            <div className="hidden lg:flex items-center bg-surface-container-low rounded-full px-4 py-2 gap-2">
-              <span className="material-symbols-outlined text-outline text-sm">
-                search
-              </span>
-              <input
-                className="bg-transparent border-none focus:ring-0 focus:outline-none text-sm w-48 text-on-surface"
-                placeholder="Search resources..."
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
           </div>
 
           {/* Desktop Nav Links */}
@@ -109,19 +89,6 @@ export default function Navbar() {
         {/* Mobile Menu Dropdown */}
         {mobileMenuOpen && (
           <div className="md:hidden mt-2 mx-2 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl p-6 space-y-2">
-            {/* Mobile Search */}
-            <div className="flex items-center bg-surface-container-low rounded-full px-4 py-3 gap-2 mb-4">
-              <span className="material-symbols-outlined text-outline text-sm">
-                search
-              </span>
-              <input
-                className="bg-transparent border-none focus:ring-0 focus:outline-none text-sm w-full text-on-surface"
-                placeholder="Search resources..."
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
             {navLinks.map((link) => (
               <Link
                 key={link.to}
@@ -161,7 +128,7 @@ export default function Navbar() {
       </header>
 
       {/* Mobile Bottom Nav */}
-      <nav className="md:hidden fixed bottom-0 w-full rounded-t-[2rem] z-50 bg-white/90 backdrop-blur-xl shadow-[0_-10px_40px_rgba(25,28,30,0.06)]">
+      <nav className="md:hidden fixed bottom-0 w-full rounded-t-4xl z-50 bg-white/90 backdrop-blur-xl shadow-[0_-10px_40px_rgba(25,28,30,0.06)]">
         <div className="flex justify-around items-center px-4 py-2 pb-5">
           {navLinks.map((link) => (
             <Link

@@ -1,7 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import { materialCategories } from "../data/dummyData";
+import {
+  getCategoriesForSemester,
+  internshipChecklist,
+  internshipCompanyDirectory,
+  isInternshipSemester,
+  projectIdeasByBranch,
+} from "../data/dummyData";
 import Modal from "../components/Modal";
 import MaterialCard from "../components/MaterialCard";
 import PdfViewer from "../components/PdfViewer";
@@ -20,13 +26,23 @@ export default function Subject() {
   const openModal = (categoryId) => setActiveCategory(categoryId);
   const closeModal = () => setActiveCategory(null);
   const closePreview = () => setPreviewPdf(null);
+  const semesterCategories = getCategoriesForSemester(semester);
+  const internshipSemester = isInternshipSemester(semester);
+  const semester8Mode = semester === 8;
 
-  const activeCat = materialCategories.find((c) => c.id === activeCategory);
+  const activeCat = semesterCategories.find((c) => c.id === activeCategory);
 
   useEffect(() => {
     let isMounted = true;
 
     const fetchMaterials = async () => {
+      if (semester8Mode) {
+        setMaterials([]);
+        setLoading(false);
+        setError("");
+        return;
+      }
+
       setLoading(true);
       setError("");
 
@@ -56,7 +72,7 @@ export default function Subject() {
     return () => {
       isMounted = false;
     };
-  }, [branchName, semester, decodedName]);
+  }, [branchName, semester, decodedName, semester8Mode]);
 
   const activeMaterials = useMemo(() => {
     if (!activeCategory) {
@@ -73,6 +89,24 @@ export default function Subject() {
         uploadedBy: material.uploadedBy?.name || "Unknown",
       }));
   }, [activeCategory, materials]);
+
+  const internshipCompanyItems = useMemo(() => {
+    return internshipCompanyDirectory.map((item) => ({
+      id: item.name,
+      title: item.name,
+      subtitle: item.focus,
+      extra: item.mode,
+    }));
+  }, []);
+
+  const projectIdeas = useMemo(() => {
+    const branchKey = ["IT", "CE", "CSE"].includes(branchName)
+      ? branchName
+      : "IT";
+    return projectIdeasByBranch[branchKey] || [];
+  }, [branchName]);
+
+  const checklistItems = useMemo(() => internshipChecklist, []);
 
   // Category card layout mapping for bento grid
   const getSpanClass = (index) => {
@@ -124,16 +158,57 @@ export default function Subject() {
                 Study Material
               </p>
               <p className="font-bold text-on-surface">
-                6 Categories Available
+                {semester8Mode ? "Internship Hub" : "6 Categories Available"}
               </p>
             </div>
           </div>
         </motion.div>
       </header>
 
+      {internshipSemester && (
+        <section className="mb-8 rounded-2xl border border-blue-200 bg-blue-50 px-5 md:px-6 py-4">
+          <div className="flex items-start gap-3">
+            <span className="material-symbols-outlined text-blue-700 mt-0.5">
+              business_center
+            </span>
+            <div>
+              <p className="text-sm font-semibold text-blue-900">
+                Internship Focus Enabled
+              </p>
+              <p className="text-sm text-blue-800 mt-1">
+                This semester includes internship-oriented resources with
+                company details and execution-ready project guidance.
+              </p>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {semester === 7 && (
+        <section className="mb-8">
+          <h2 className="font-[Manrope] text-2xl font-bold text-on-surface mb-4">
+            Suggested Internship Companies
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {internshipCompanyDirectory.slice(0, 4).map((company) => (
+              <div
+                key={company.name}
+                className="rounded-xl border border-outline-variant/20 bg-surface-container-low p-4"
+              >
+                <p className="font-semibold text-on-surface">{company.name}</p>
+                <p className="text-sm text-on-surface-variant mt-1">
+                  {company.focus}
+                </p>
+                <p className="text-xs text-outline mt-2">{company.mode}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* Category Bento Grid */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-        {materialCategories.map((category, index) => {
+        {semesterCategories.map((category, index) => {
           const spanClass = getSpanClass(index);
           const isSolutions = category.id === "solutions";
           const isBooks = index === 5;
@@ -255,26 +330,79 @@ export default function Subject() {
         subtitle={decodedName}
       >
         <div className="space-y-4">
-          {loading && (
+          {activeCategory === "companyDirectory" && (
+            <div className="space-y-3">
+              {internshipCompanyItems.map((company) => (
+                <div
+                  key={company.id}
+                  className="rounded-xl border border-outline-variant/30 bg-surface-container-low p-4"
+                >
+                  <p className="font-semibold text-on-surface">
+                    {company.title}
+                  </p>
+                  <p className="text-sm text-on-surface-variant mt-1">
+                    Roles: {company.subtitle}
+                  </p>
+                  <p className="text-xs text-outline mt-2">
+                    Mode: {company.extra}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {activeCategory === "projectIdeas" && (
+            <ul className="space-y-3">
+              {projectIdeas.map((idea, idx) => (
+                <li
+                  key={`${idea}-${idx}`}
+                  className="rounded-xl border border-outline-variant/30 bg-surface-container-low p-4 text-sm text-on-surface-variant"
+                >
+                  {idea}
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {activeCategory === "internshipChecklist" && (
+            <ul className="space-y-3">
+              {checklistItems.map((item, idx) => (
+                <li
+                  key={`${item}-${idx}`}
+                  className="rounded-xl border border-outline-variant/30 bg-surface-container-low p-4 text-sm text-on-surface-variant"
+                >
+                  {idx + 1}. {item}
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {!semester8Mode && loading && (
             <p className="text-sm text-on-surface-variant">
               Loading materials...
             </p>
           )}
-          {!loading && error && <p className="text-sm text-error">{error}</p>}
-          {!loading && !error && activeMaterials.length === 0 && (
-            <p className="text-sm text-on-surface-variant">
-              No approved materials found in this category yet.
-            </p>
+          {!semester8Mode && !loading && error && (
+            <p className="text-sm text-error">{error}</p>
           )}
-          {activeMaterials.map((material) => (
-            <MaterialCard
-              key={material.id}
-              material={material}
-              onPreviewPdf={setPreviewPdf}
-            />
-          ))}
+          {!semester8Mode &&
+            !loading &&
+            !error &&
+            activeMaterials.length === 0 && (
+              <p className="text-sm text-on-surface-variant">
+                No approved materials found in this category yet.
+              </p>
+            )}
+          {!semester8Mode &&
+            activeMaterials.map((material) => (
+              <MaterialCard
+                key={material.id}
+                material={material}
+                onPreviewPdf={setPreviewPdf}
+              />
+            ))}
         </div>
-        {!loading && !error && activeMaterials.length > 0 && (
+        {!semester8Mode && !loading && !error && activeMaterials.length > 0 && (
           <div className="mt-6 pt-6 border-t border-outline-variant/10 flex flex-col sm:flex-row justify-between items-center gap-4">
             <p className="text-sm text-on-surface-variant italic">
               Showing {activeMaterials.length} materials
