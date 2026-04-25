@@ -15,6 +15,7 @@ export default function Navbar() {
   ];
   const userLinks = [
     { to: "/", label: "Home", icon: "home" },
+    { to: "/dashboard", label: "Dashboard", icon: "space_dashboard" },
     { to: "/study-guide", label: "AI Guide", icon: "auto_awesome" },
     { to: "/upload", label: "Upload", icon: "add_circle" },
   ];

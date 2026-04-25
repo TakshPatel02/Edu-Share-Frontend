@@ -18,6 +18,7 @@ import Signup from "./pages/Signup";
 import Upload from "./pages/Upload";
 import StudyGuideBot from "./pages/StudyGuideBot";
 import Admin from "./pages/Admin";
+import UserDashboard from "./pages/UserDashboard";
 
 function AdminRoute() {
   const { authLoading, isAuthenticated, isAdmin } = useAppContext();
@@ -41,6 +42,24 @@ function AdminRoute() {
   return <Admin />;
 }
 
+function DashboardRoute() {
+  const { authLoading, isAuthenticated } = useAppContext();
+
+  if (authLoading) {
+    return (
+      <main className="min-h-screen grid place-items-center bg-slate-50">
+        <p className="text-slate-600 font-medium">Loading dashboard...</p>
+      </main>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return <UserDashboard />;
+}
+
 function AppRoutes() {
   const location = useLocation();
   const isShellHidden = ["/login", "/signup", "/admin"].includes(
@@ -53,6 +72,7 @@ function AppRoutes() {
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<Home />} />
+          <Route path="/dashboard" element={<DashboardRoute />} />
           <Route path="/branch/:branchName" element={<Branch />} />
           <Route
             path="/branch/:branchName/semester/:semId"

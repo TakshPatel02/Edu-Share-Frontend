@@ -47,6 +47,7 @@ export const authApi = {
     signup: (payload) => request({ path: '/api/auth/signup', method: 'POST', body: payload }),
     login: (payload) => request({ path: '/api/auth/login', method: 'POST', body: payload }),
     me: (token) => request({ path: '/api/auth/me', token }),
+    dashboard: (token) => request({ path: '/api/auth/dashboard', token }),
 };
 
 export const materialsApi = {
