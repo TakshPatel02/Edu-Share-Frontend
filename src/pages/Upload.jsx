@@ -21,7 +21,7 @@ export default function Upload() {
     semester: "",
     subject: "",
     category: "",
-    file: null,
+    files: [],
     link: "",
   });
   const [submitting, setSubmitting] = useState(false);
@@ -29,26 +29,34 @@ export default function Upload() {
   const [success, setSuccess] = useState("");
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
+    const { name, value, files: selectedFiles } = e.target;
 
     if (name === "file") {
-      const selectedFile = files?.[0] || null;
+      const newFiles = Array.from(selectedFiles || []);
 
-      if (selectedFile && selectedFile.type !== "application/pdf") {
-        setError("Only PDF files are allowed.");
+      const invalid = newFiles.find((f) => f.type !== "application/pdf");
+      if (invalid) {
+        setError(`"${invalid.name}" is not a PDF. Only PDF files are allowed.`);
         return;
       }
 
-      if (selectedFile && selectedFile.size > 5 * 1024 * 1024) {
-        setError("File is too large. Maximum allowed size is 5MB.");
+      const tooLarge = newFiles.find((f) => f.size > 5 * 1024 * 1024);
+      if (tooLarge) {
+        setError(`"${tooLarge.name}" is too large. Maximum allowed size is 5MB per file.`);
         return;
       }
 
       setError("");
-      setForm((prev) => ({
-        ...prev,
-        file: selectedFile,
-      }));
+      setForm((prev) => {
+        const existingNames = new Set(prev.files.map((f) => f.name));
+        const uniqueNew = newFiles.filter((f) => !existingNames.has(f.name));
+        return {
+          ...prev,
+          files: [...prev.files, ...uniqueNew],
+        };
+      });
+      // Reset the input so the same files can be re-selected if removed
+      e.target.value = "";
       return;
     }
 
@@ -56,6 +64,13 @@ export default function Upload() {
       ...prev,
       [name]: value,
       ...(name === "branch" || name === "semester" ? { subject: "" } : {}),
+    }));
+  };
+
+  const removeFile = (index) => {
+    setForm((prev) => ({
+      ...prev,
+      files: prev.files.filter((_, i) => i !== index),
     }));
   };
 
@@ -83,12 +98,12 @@ export default function Upload() {
       return;
     }
 
-    if (!form.file && !normalizedLink) {
-      setError("Please upload a PDF or provide an external link.");
+    if (form.files.length === 0 && !normalizedLink) {
+      setError("Please upload at least one PDF or provide an external link.");
       return;
     }
 
-    const type = form.file ? "PDF" : "Link";
+    const type = form.files.length > 0 ? "PDF" : "Link";
     const payload = new FormData();
     payload.append("title", form.title);
     payload.append("description", form.description);
@@ -98,8 +113,8 @@ export default function Upload() {
     payload.append("category", form.category);
     payload.append("type", type);
 
-    if (form.file) {
-      payload.append("file", form.file);
+    for (const file of form.files) {
+      payload.append("file", file);
     }
 
     if (normalizedLink) {
@@ -118,7 +133,7 @@ export default function Upload() {
         semester: "",
         subject: "",
         category: "",
-        file: null,
+        files: [],
         link: "",
       });
     } catch (err) {
@@ -265,14 +280,35 @@ export default function Upload() {
               name="file"
               onChange={handleChange}
               accept=".pdf,application/pdf"
+              multiple
             />
-            {form.file && (
-              <p className="text-sm text-on-surface-variant px-1">
-                Selected file:{" "}
-                <span className="font-semibold text-on-surface">
-                  {form.file.name}
-                </span>
-              </p>
+            {form.files.length > 0 && (
+              <div className="space-y-2 px-1">
+                <p className="text-sm font-semibold text-on-surface">
+                  {form.files.length} file{form.files.length > 1 ? "s" : ""} selected
+                </p>
+                {form.files.map((file, i) => (
+                  <div
+                    key={`${file.name}-${i}`}
+                    className="flex items-center justify-between bg-surface-container-low rounded-xl px-4 py-2.5"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <span className="material-symbols-outlined text-primary text-xl">description</span>
+                      <span className="text-sm text-on-surface truncate">{file.name}</span>
+                      <span className="text-xs text-outline shrink-0">
+                        {(file.size / (1024 * 1024)).toFixed(2)} MB
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => removeFile(i)}
+                      className="ml-3 shrink-0 w-7 h-7 flex items-center justify-center rounded-full hover:bg-error/10 text-outline hover:text-error transition-colors"
+                    >
+                      <span className="material-symbols-outlined text-lg">close</span>
+                    </button>
+                  </div>
+                ))}
+              </div>
             )}
             {/* Guidance Card */}
             <div className="bg-surface-container-high p-8 rounded-2xl">

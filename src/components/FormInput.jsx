@@ -9,6 +9,7 @@ export default function FormInput({
   name,
   accept,
   disabled = false,
+  multiple = false,
 }) {
   const baseClasses =
     "w-full h-14 px-6 rounded-xl bg-surface-container-lowest border-none focus:ring-2 focus:ring-primary/20 text-on-surface placeholder:text-outline-variant transition-all outline-none";
@@ -47,6 +48,7 @@ export default function FormInput({
           name={name}
           accept={accept}
           disabled={disabled}
+          multiple={multiple}
         />
         <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
         <div className="w-20 h-20 rounded-full bg-secondary-container flex items-center justify-center mb-6 text-primary group-hover:scale-110 transition-transform">
@@ -59,7 +61,7 @@ export default function FormInput({
         </div>
         <h3 className="text-xl font-bold mb-2">Drag files here</h3>
         <p className="text-on-surface-variant text-sm mb-6">
-          Support for PDF only up to 5MB.
+          Upload multiple PDFs at once (up to 5MB each).
         </p>
         <label className="px-8 py-3 bg-surface-container-high rounded-full font-semibold text-secondary hover:bg-surface-container-highest transition-colors cursor-pointer pointer-events-none">
           Browse Files
