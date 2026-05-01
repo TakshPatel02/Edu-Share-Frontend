@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   BrowserRouter,
   Routes,
@@ -65,6 +66,10 @@ function AppRoutes() {
   const isShellHidden = ["/login", "/signup", "/admin"].includes(
     location.pathname,
   );
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
 
   return (
     <div className="bg-background font-[Inter] text-on-surface min-h-screen antialiased">
