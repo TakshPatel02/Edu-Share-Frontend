@@ -65,9 +65,9 @@ export const adminApi = {
 };
 
 export const studyGuideApi = {
-    // Generate personalized study plan (no auth required)
-    generatePlan: (payload) =>
-        request({ path: '/api/study-guide/generate-plan', method: 'POST', body: payload }),
+    // Generate personalized study plan (pass token if logged in)
+    generatePlan: ({ payload, token }) =>
+        request({ path: '/api/study-guide/generate-plan', method: 'POST', body: payload, token }),
 
     // Get chat responses for study guidance
     chat: (payload) =>

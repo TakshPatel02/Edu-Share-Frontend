@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { studyGuideApi } from "../lib/api.js";
+import { useAppContext } from "../context/AppContext";
 import {
   branches,
   semesters,
@@ -34,6 +35,7 @@ const isValidYoutubePlaylistUrl = (url) => {
 };
 
 export default function StudyGuideBot() {
+  const { token } = useAppContext();
   const [branch, setBranch] = useState("IT");
   const [semester, setSemester] = useState("5");
   const [subject, setSubject] = useState("");
@@ -121,7 +123,7 @@ export default function StudyGuideBot() {
         formData.append("notesPdf", notesPdf);
       }
 
-      const response = await studyGuideApi.generatePlan(formData);
+      const response = await studyGuideApi.generatePlan({ payload: formData, token });
 
       if (response.success) {
         setPlan(response.data);

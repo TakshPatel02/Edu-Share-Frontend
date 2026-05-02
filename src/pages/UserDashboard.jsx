@@ -46,6 +46,7 @@ export default function UserDashboard() {
   const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [expandedPlanId, setExpandedPlanId] = useState(null);
 
   const plans = dashboard?.studyPlans?.plans || [];
   const books = dashboard?.books || {
@@ -375,6 +376,83 @@ export default function UserDashboard() {
                         </p>
                       </div>
                     </div>
+
+                    <div className="mt-4 flex justify-end">
+                      <button
+                        onClick={() => setExpandedPlanId(expandedPlanId === plan.id ? null : plan.id)}
+                        className="text-sm font-semibold text-sky-600 hover:text-sky-700 flex items-center gap-1 transition-colors"
+                      >
+                        {expandedPlanId === plan.id ? "Hide Details" : "View Full Plan"}
+                        <span className={`material-symbols-outlined text-[18px] transition-transform ${expandedPlanId === plan.id ? "rotate-180" : ""}`}>
+                          expand_more
+                        </span>
+                      </button>
+                    </div>
+
+                    {expandedPlanId === plan.id && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        className="mt-4 pt-4 border-t border-slate-200 space-y-4"
+                      >
+                        <div>
+                          <h4 className="font-bold text-slate-900 text-sm mb-2">Roadmap</h4>
+                          <ul className="space-y-2">
+                            {(plan.roadmap || []).map((item, idx) => (
+                              <li key={idx} className="text-sm text-slate-600 bg-white rounded-xl p-3 border border-slate-200 shadow-sm">
+                                {item}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+
+                        <div>
+                          <h4 className="font-bold text-slate-900 text-sm mb-2">Daily Routine</h4>
+                          <div className="grid sm:grid-cols-2 gap-2">
+                            {(plan.dailyRoutine || []).map((item, idx) => (
+                              <div key={idx} className="rounded-xl bg-white border border-slate-200 px-3 py-2 text-sm text-slate-600 shadow-sm">
+                                {item}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div>
+                          <h4 className="font-bold text-slate-900 text-sm mb-2">Smart Tips</h4>
+                          <ul className="space-y-2">
+                            {(plan.tips || []).map((item, idx) => (
+                              <li key={idx} className="text-sm text-slate-600">
+                                • {item}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+
+                        {(plan.videoPlan || []).length > 0 && (
+                          <div className="rounded-xl border border-slate-200 p-4 bg-white shadow-sm">
+                            <h4 className="font-bold text-slate-900 text-sm mb-2">Video Plan</h4>
+                            <ul className="space-y-2">
+                              {(plan.videoPlan || []).map((item, idx) => (
+                                <li key={idx} className="text-sm text-slate-600">
+                                  • {item}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                        
+                        {plan.resources?.youtubePlaylist && (
+                          <a
+                            href={plan.resources.youtubePlaylist}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="block text-center rounded-xl border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-sky-800 hover:bg-sky-100 transition-colors"
+                          >
+                            Open recommended playlist
+                          </a>
+                        )}
+                      </motion.div>
+                    )}
                   </article>
                 ))}
               </div>
