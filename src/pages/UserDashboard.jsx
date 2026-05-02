@@ -5,15 +5,15 @@ import { authApi } from "../lib/api";
 import { useAppContext } from "../context/AppContext";
 
 const STAT_CARDS = [
-  { key: "total", label: "Books Uploaded", accent: "from-sky-500 to-cyan-400" },
+  { key: "total", label: "Materials Uploaded", accent: "from-sky-500 to-cyan-400" },
   {
     key: "approved",
-    label: "Accepted Books",
+    label: "Accepted Materials",
     accent: "from-emerald-500 to-lime-400",
   },
   {
     key: "rejected",
-    label: "Rejected Books",
+    label: "Rejected Materials",
     accent: "from-rose-500 to-orange-400",
   },
   {
@@ -56,6 +56,7 @@ export default function UserDashboard() {
     pending: 0,
   };
   const planCount = dashboard?.studyPlans?.count || 0;
+  const documents = dashboard?.documents || [];
   const acceptanceRate =
     books.total > 0 ? Math.round((books.approved / books.total) * 100) : 0;
 
@@ -127,7 +128,7 @@ export default function UserDashboard() {
                 Welcome back{user?.name ? `, ${user.name.split(" ")[0]}` : ""}.
               </h1>
               <p className="mt-4 text-slate-600 text-base md:text-lg max-w-2xl leading-relaxed">
-                Track the books you uploaded, see how many were accepted or
+                Track the materials you uploaded, see how many were accepted or
                 rejected, and review the study plans you created while logged
                 in.
               </p>
@@ -191,10 +192,10 @@ export default function UserDashboard() {
             <div className="flex items-start justify-between gap-4 mb-6">
               <div>
                 <h2 className="font-[Manrope] text-2xl font-bold text-slate-900">
-                  Book Upload Summary
+                  Material Upload Summary
                 </h2>
                 <p className="text-sm text-slate-500 mt-1">
-                  Status breakdown for your uploaded books.
+                  Status breakdown for your uploaded materials.
                 </p>
               </div>
               <span className="inline-flex items-center rounded-full bg-sky-50 px-3 py-1 text-xs font-semibold text-sky-700">
@@ -453,6 +454,78 @@ export default function UserDashboard() {
                         )}
                       </motion.div>
                     )}
+                  </article>
+                ))}
+              </div>
+            ) : null}
+          </motion.article>
+        </section>
+
+        {/* Uploaded Documents Section */}
+        <section className="mt-6 md:mt-8">
+          <motion.article
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="rounded-[2rem] border border-slate-200 bg-white p-6 md:p-7 shadow-[0_18px_40px_rgba(15,23,42,0.06)]"
+          >
+            <div className="flex items-start justify-between gap-4 mb-6">
+              <div>
+                <h2 className="font-[Manrope] text-2xl font-bold text-slate-900">
+                  Your Uploaded Documents
+                </h2>
+                <p className="text-sm text-slate-500 mt-1">
+                  All materials you have contributed to the platform.
+                </p>
+              </div>
+              <Link
+                to="/upload"
+                className="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700 transition-colors"
+              >
+                Upload New
+              </Link>
+            </div>
+
+            {loading ? (
+              <p className="text-sm text-slate-500">Loading documents...</p>
+            ) : null}
+
+            {!loading && !error && documents.length === 0 ? (
+              <div className="rounded-3xl border border-dashed border-slate-300 bg-slate-50 px-5 py-8 text-center">
+                <p className="font-semibold text-slate-900">No documents yet</p>
+                <p className="mt-2 text-sm text-slate-500">
+                  Share your first material to see it here.
+                </p>
+              </div>
+            ) : null}
+
+            {!loading && !error && documents.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {documents.map((doc) => (
+                  <article
+                    key={doc.id}
+                    className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4 flex flex-col justify-between"
+                  >
+                    <div>
+                      <div className="flex items-start justify-between gap-2 mb-3">
+                        <span className={`px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${doc.status === 'approved' ? 'bg-emerald-100 text-emerald-700' : doc.status === 'rejected' ? 'bg-rose-100 text-rose-700' : 'bg-amber-100 text-amber-700'}`}>
+                          {doc.status}
+                        </span>
+                        <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                          {doc.category}
+                        </span>
+                      </div>
+                      <h3 className="font-semibold text-slate-900 text-base line-clamp-2" title={doc.title}>
+                        {doc.title}
+                      </h3>
+                      <p className="mt-1 text-sm text-slate-600 truncate">
+                        {doc.subject}
+                      </p>
+                    </div>
+                    <div className="mt-4 pt-3 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
+                      <span className="font-medium">{doc.type}</span>
+                      <span>{formatDate(doc.createdAt)}</span>
+                    </div>
                   </article>
                 ))}
               </div>
